@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -20,7 +21,15 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'title' => 'required|string',
+            'author' => 'required|string',
+            'price' => 'required|numeric',
+            'picture' => 'image'
+        ]);
+
+        Book::create($data);
+        return response()->json($data);
     }
 
     /**
@@ -28,22 +37,32 @@ class BookController extends Controller
      */
     public function show(Int $id)
     {
-        //
+        return  Book::findOrFail($id);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Book $book)
+    public function update(Request $request, Book $book, int $id)
     {
-        //
+        $book = $book->findOrFail($id);
+        $data = $request->validate([
+            'title' => 'required|string',
+            'author' => 'required|string',
+            'price' => 'required|numeric',
+            'picture' => 'image'
+        ]);
+
+        $book->update($request->all());
+       return response()->json(true);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Book $book)
+    public function destroy(Book $book, int $id)
     {
-        //
+        $book = $book->findOrFail($id)->delete();
+        return response()->json(true);
     }
 }
