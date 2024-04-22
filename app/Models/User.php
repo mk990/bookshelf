@@ -10,8 +10,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory;
-    use Notifiable;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -47,8 +46,6 @@ class User extends Authenticatable implements JWTSubject
             'password' => 'hashed',
         ];
     }
-
-
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
@@ -69,3 +66,4 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 }
+

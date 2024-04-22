@@ -16,12 +16,14 @@ class BookFactory extends Factory
      */
     public function definition(): array
     {
+
         return [
-           'user_id' => 1,
-           'title' => fake()->name(),
-           'author' => fake()->name(),
-           'price' => fake()->numberBetween(1, 100),
-           'picture' => fake()->imageUrl()
+            'user_id' => 1,
+            'title' => fake()->name(),
+            'author' => fake()->name(),
+            'price' => fake()->numberBetween(0,100),
+            'picture' => fake()->imageUrl()
+            
         ];
     }
 }
