@@ -18,7 +18,7 @@ class AuthController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth', except: ['login','register']),
+            new Middleware('auth', except: ['login', 'register']),
         ];
     }
 
@@ -26,9 +26,9 @@ class AuthController extends Controller implements HasMiddleware
     {
         $request->validate([
             'first_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed|min:6',
+            'last_name'  => 'required|max:255',
+            'email'      => 'required|email|unique:users',
+            'password'   => 'required|confirmed|min:6',
         ]);
 
         $user = User::create($request->all());
@@ -43,15 +43,14 @@ class AuthController extends Controller implements HasMiddleware
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required',
         ]);
-        $credentials = request(['email', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
+        $credentials = request(['email', 'password']);
+        if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
         return $this->respondWithToken($token);
     }
 
@@ -98,8 +97,8 @@ class AuthController extends Controller implements HasMiddleware
     {
         return response()->json([
             'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'token_type'   => 'bearer',
+            'expires_in'   => auth()->factory()->getTTL() * 60
         ]);
     }
 

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BookController extends Controller
 {
@@ -20,7 +22,21 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title'   => 'required',
+            'author'  => 'required',
+            'price'   => 'required|numeric',
+            'picture' => 'required|url',
+        ]);
+
+        try {
+            $request->merge(['user_id' => auth()->user()->id]);
+            $book = Book::create($request->all());
+            return response()->json($book);
+        } catch(Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Book not created'], 400);
+        }
     }
 
     /**
@@ -28,22 +44,51 @@ class BookController extends Controller
      */
     public function show(Int $id)
     {
-        //
+        try {
+            $book = Book::findOrFail($id);
+            return response()->json($book);
+        } catch(Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Book not found'], 400);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Book $book)
+    public function update(Request $request, Int $id)
     {
-        //
+        $request->validate([
+            'title'   => 'required',
+            'author'  => 'required',
+            'price'   => 'required|numeric',
+            'picture' => 'required|url',
+        ]);
+        $request->merge(['user_id' => auth()->user()->id]);
+
+        try {
+            $book = Book::findOrFail($id);
+            $book->update($request->all());
+            return response()->json($book);
+        } catch(Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Book not created'], 400);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Book $book)
+    public function destroy(Int $id)
     {
-        //
+        try {
+            $book = Book::findOrFail($id);
+            $book->delete();
+            $id = $book->id;
+            return response()->json("book $id deleted");
+        } catch(Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Book not deleted'], 400);
+        }
     }
 }
