@@ -10,14 +10,10 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::create('books', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('category_id')->nullable();
-            $table->string('user_id');
-            $table->string('title');
-            $table->string('author');
-            $table->integer('price');
-            $table->string('picture');
+            $table->string('name');
+            $table->string('description', 1000)->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +23,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('books');
+        Schema::dropIfExists('categories');
     }
 };
