@@ -26,17 +26,28 @@ class BookController extends Controller
             'title'   => 'required',
             'author'  => 'required',
             'price'   => 'required|numeric',
-            'picture' => 'required|url',
+            'picture' => 'required|image',
         ]);
-
         try {
+            $imagePath = '/picture/' . now()->year . '/' . now()->month . '/';
+            $image = $request->file('picture');
+            $upload = $this->uploadFile($imagePath, $image);
+
+            $request->merge(['image'=> $upload]);
             $request->merge(['user_id' => auth()->user()->id]);
             $book = Book::create($request->all());
             return response()->json($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not created'], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
+    }
+
+    public function uploadFile($path, $file)
+    {
+        $filename = date('ymd-hms') . '.' . $file->extension();
+        $file->move(public_path($path), $filename);
+        return response()->json($file . $path);
     }
 
     /**

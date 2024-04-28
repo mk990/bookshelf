@@ -44,10 +44,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
-
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -67,5 +66,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function book()
+    {
+        return $this->hasMany(Book::class);
     }
 }
