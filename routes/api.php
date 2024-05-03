@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/user', function (Request $request) {
@@ -26,4 +27,13 @@ Route::group([
     Route::get('{id}', [BookController::class, 'show']);
     Route::put('{id}', [BookController::class, 'update']);
     Route::delete('{id}', [BookController::class, 'destroy']);
+});
+Route::group([
+    'prefix' => 'categories'
+], function ($router) {
+    Route::get('', [CategoryController::class, 'index']);
+    Route::post('', [CategoryController::class, 'store']);
+    Route::get('{id}', [CategoryController::class, 'show']);
+    Route::put('{id}', [CategoryController::class, 'update']);
+    Route::delete('{id}', [CategoryController::class, 'destroy']);
 });
