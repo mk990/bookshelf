@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Exception;
+use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -26,7 +27,6 @@ class BookController extends Controller
             'title'   => 'required',
             'author'  => 'required',
             'price'   => 'required|numeric',
-            'picture' => 'required|url',
         ]);
 
         try {
@@ -35,7 +35,7 @@ class BookController extends Controller
             return response()->json($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not created'], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
@@ -62,7 +62,6 @@ class BookController extends Controller
             'title'   => 'required',
             'author'  => 'required',
             'price'   => 'required|numeric',
-            'picture' => 'required|url',
         ]);
         $request->merge(['user_id' => auth()->user()->id]);
 
@@ -90,5 +89,13 @@ class BookController extends Controller
             Log::error($e->getMessage());
             return response()->json(['error' => 'Book not deleted'], 400);
         }
+    }
+
+    /**
+     * create Random quote in book
+     */
+    public function quote()
+    {
+        return Inspiring::quote();
     }
 }

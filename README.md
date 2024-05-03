@@ -36,8 +36,12 @@ To install, you need to do the following steps in the project's command line or 
 ```
 
 
-##### step 4 : copy data .env.example in .env 
+##### step 4 : 
 
+
+```
+	copy data .env.example in .env 
+```
 
 ##### step 5 : Generate key application
 
