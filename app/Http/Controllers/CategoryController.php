@@ -6,10 +6,19 @@ use App\Models\Book;
 use App\Models\Category;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Log;
 
-class CategoryController extends Controller
+class CategoryController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth', except: ['index', 'show']),
+        ];
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -24,13 +33,11 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'  => 'required|string',
+            'name'          => 'required|string',
             'description'   => 'required|string',
-            
         ]);
-            $category = category::create($request->all());
-           
-            return response()->json($category);
+        $category = category::create($request->all());
+        return response()->json($category);
     }
 
     /**
@@ -40,11 +47,11 @@ class CategoryController extends Controller
     {
         try {
             $category = category::findOrFail($id);
-            $book=Book::where('category_id',$category->id)->get();
-            return response()->json($book);
+            $book = Book::where('category_id', $category->id)->get();
+            return $this->success($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'category not found'], 400);
+            return $this->error('category not found');
         }
     }
 
@@ -54,17 +61,17 @@ class CategoryController extends Controller
     public function update(Request $request, Int $id)
     {
         $request->validate([
-            'name'  => 'required|string',
+            'name'          => 'required|string',
             'description'   => 'required|string',
         ]);
-      
+
         try {
             $category = category::findOrFail($id);
             $category->update($request->all());
             return response()->json($category);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'catefory not update'], 400);
+            return response()->json(['error' => 'category not update'], 400);
         }
     }
 

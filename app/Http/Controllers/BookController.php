@@ -5,28 +5,60 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Log;
 
-class BookController extends Controller
+class BookController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public static function middleware(): array
     {
-        return Book::latest()->paginate(20);
+        return [
+            new Middleware('auth', except: ['index', 'show']),
+        ];
     }
 
+    // FIXME: fix pagination schema
     /**
-     * Store a newly created resource in storage.
-     */
+    * @OA\Get(
+    *     path="/book",
+    *     tags={"Book"},
+    *     summary="listAllBook",
+    *     description="list all book",
+    *     @OA\Parameter(
+    *         name="page",
+    *         in="query",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="string",
+    *             default="1"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/BookModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an ""unexpected"" error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     )
+    * )
+    * Display the specified resource.
+    */
+    public function index()
+    {
+        return $this->success(Book::latest()->paginate(20));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'title'   => 'required',
             'author'  => 'required',
             'price'   => 'required|numeric',
-            'picture' => 'required|string',
+            // 'picture' => 'required|string',
         ]);
 
         try {
@@ -35,13 +67,37 @@ class BookController extends Controller
             return response()->json($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 400);
+            return response()->json(['error' => 'Book not created'], 400);
         }
     }
 
     /**
-     * Display the specified resource.
-     */
+    * @OA\Get(
+    *     path="/book/{id}",
+    *     tags={"Book"},
+    *     summary="getOneBook",
+    *     description="get One book",
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="integer"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/BookModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an ""unexpected"" error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     )
+    * )
+    * Display the specified resource.
+    */
     public function show(Int $id)
     {
         try {
