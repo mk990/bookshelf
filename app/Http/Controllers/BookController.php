@@ -26,7 +26,7 @@ class BookController extends Controller
             'title'   => 'required',
             'author'  => 'required',
             'price'   => 'required|numeric',
-            'picture' => 'required|url',
+            'picture' => 'required|string',
         ]);
 
         try {
@@ -35,7 +35,7 @@ class BookController extends Controller
             return response()->json($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not created'], 400);
+            return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
