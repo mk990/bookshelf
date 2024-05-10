@@ -37,7 +37,7 @@ class BookController extends Controller implements HasMiddleware
     *     @OA\Response(
     *         response=200,
     *         description="Success Message",
-    *         @OA\JsonContent(ref="#/components/schemas/BookModel"),
+    *         @OA\JsonContent(ref="#/components/schemas/BookList"),
     *     ),
     *     @OA\Response(
     *         response=400,
@@ -52,6 +52,51 @@ class BookController extends Controller implements HasMiddleware
         return $this->success(Book::latest()->paginate(20));
     }
 
+    /**
+    * @OA\Post(
+    *     path="/book",
+    *     tags={"Book"},
+    *     summary="MakeOneBook",
+    *     description="make one book",
+    *     @OA\RequestBody(
+    *         description="tasks input",
+    *         required=true,
+    *         @OA\JsonContent(
+    *             @OA\Property(
+    *                 property="title",
+    *                 type="string",
+    *                 description="title",
+    *                 example="book name"
+    *             ),
+    *             @OA\Property(
+    *                 property="author",
+    *                 type="string",
+    *                 description="author",
+    *                 default="null",
+    *                 example="writer book",
+    *             ),
+    *             @OA\Property(
+    *                 property="price",
+    *                 type="integer",
+    *                 description="price",
+    *                 default="null",
+    *                 example=0,
+    *             )
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/BookModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an 'unexpected' error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     ),security={{"api_key": {}}}
+    * )
+    * Make a book
+    */
     public function store(Request $request)
     {
         $request->validate([
@@ -64,10 +109,10 @@ class BookController extends Controller implements HasMiddleware
         try {
             $request->merge(['user_id' => auth()->user()->id]);
             $book = Book::create($request->all());
-            return response()->json($book);
+            return $this->success($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not created'], 400);
+            return $this->error('Book not created');
         }
     }
 

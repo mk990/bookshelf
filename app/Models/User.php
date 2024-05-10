@@ -8,6 +8,34 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+/**
+ * @SWG\Definition(
+ *     definition="User",
+ *     type="array",
+ *     @SWG\Items(
+ *         type="object",
+ *         @SWG\Property(type="string", property="user_name", description="User name"),
+ *         @SWG\Property(type="array", property="education", description="Education",
+ *             @SWG\Items(
+ *                 @SWG\Property(property="degree", type="object",
+ *                     type="array",
+ *                     @SWG\Items(
+ *                         @SWG\Property(property="year", type="string"),
+ *                         @SWG\Property(property="name", type="string"),
+ *                     ),
+ *                 ),
+ *                 @SWG\Property(property="hobby", type="object",
+ *                     type="array",
+ *                     @SWG\Items(
+ *                         @SWG\Property(property="type", type="string"),
+ *                         @SWG\Property(property="description", type="string"),
+ *                     ),
+ *                 ),
+ *             ),
+ *         ),
+ *     ),
+ * ),
+ */
 class User extends Authenticatable implements JWTSubject
 {
     use HasFactory;
@@ -44,10 +72,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
-
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
