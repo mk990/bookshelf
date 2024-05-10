@@ -173,10 +173,26 @@ class AuthController extends Controller implements HasMiddleware
     }
 
     /**
-     * Log the user out (Invalidate the token).
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    * @OA\Post(
+    *     path="/auth/logout",
+    *     tags={"Login & Register"},
+    *     summary="logout",
+    *     description="logout",
+    *     operationId="logout",
+    *     @OA\Response(
+    *         response="200",
+    *         description="Success",
+    *     ),
+    *     @OA\Response(
+    *         response="400",
+    *         description="Error",
+    *     ),security={{"api_key": {}}}
+    * )
+    *
+    * Log the user out (Invalidate the token).
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
     public function logout()
     {
         auth()->logout();
@@ -185,10 +201,26 @@ class AuthController extends Controller implements HasMiddleware
     }
 
     /**
-     * Refresh a token.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    * @OA\Get(
+    *     path="/auth/refresh",
+    *     tags={"Login & Register"},
+    *     summary="refresh",
+    *     description="refresh a token",
+    *     operationId="refresh",
+    *     @OA\Response(
+    *         response="200",
+    *         description="Success",
+    *     ),
+    *     @OA\Response(
+    *         response="400",
+    *         description="Error",
+    *     ),security={{"api_key": {}}}
+    * )
+    *
+    * Refresh a token.
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
     public function refresh()
     {
         return $this->respondWithToken(auth()->refresh());

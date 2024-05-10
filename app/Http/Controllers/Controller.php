@@ -53,27 +53,27 @@ abstract class Controller
 
     // FIXME: fix errors type
     /**
-     * @OA\Schema(
-     *     schema="ErrorModel",
-     *     title="Error Model",
-     *     type="object",
-     *     description="Error Model",
-     *     @OA\Property(
-     *         property="message",
-     *         description="error message",
-     *         type="string",
-     *         format="",
-     *         example="my error message",
-     *     ),
-     *     @OA\Property(
-     *         property="errors",
-     *         description="errors",
-     *         type="string",
-     *         format="string",
-     *         example="string",
-     *     ),
-     * )
-     */
+    * @OA\Schema(
+    *     schema="ErrorModel",
+    *     title="Error Model",
+    *     type="object",
+    *     description="Error Model",
+    *     @OA\Property(
+    *         property="message",
+    *         description="error message",
+    *         type="string",
+    *         format="",
+    *         example="my error message",
+    *     ),
+    *     @OA\Property(
+    *         property="errors",
+    *         description="errors",
+    *         type="array",
+    *         @OA\Items(type="string"),
+    *         example={"error1", "error2"},
+    *     ),
+    * )
+    */
     public function error(string $message = '', array $errors = [], int $status = 400): JsonResponse
     {
         $data = ['message' => $message, 'errors' => $errors ?: []];

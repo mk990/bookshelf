@@ -22,7 +22,7 @@ class CategoryController extends Controller implements HasMiddleware
     // FIXME: fix pagination schema
     /**
     * @OA\Get(
-    *     path="/categories",
+    *     path="/category",
     *     tags={"Category"},
     *     summary="listAllCategory",
     *     description="list all category",
@@ -54,8 +54,43 @@ class CategoryController extends Controller implements HasMiddleware
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
+    * @OA\Post(
+    *     path="/category",
+    *     tags={"Category"},
+    *     summary="MakeOneCategory",
+    *     description="make one category",
+    *     @OA\RequestBody(
+    *         description="tasks input",
+    *         required=true,
+    *         @OA\JsonContent(
+    *             @OA\Property(
+    *                 property="name",
+    *                 type="string",
+    *                 description="name",
+    *                 example="category name"
+    *             ),
+    *             @OA\Property(
+    *                 property="description",
+    *                 type="string",
+    *                 description="description",
+    *                 default="null",
+    *                 example="description",
+    *             ),
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/BookModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an 'unexpected' error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     ),security={{"api_key": {}}}
+    * )
+    * Store a newly created resource in storage.
+    */
     public function store(Request $request)
     {
         $request->validate([
@@ -68,7 +103,7 @@ class CategoryController extends Controller implements HasMiddleware
 
     /**
     * @OA\Get(
-    *     path="/categories/{id}",
+    *     path="/category/{id}",
     *     tags={"Category"},
     *     summary="getOneCategory",
     *     description="get One category",
@@ -107,7 +142,7 @@ class CategoryController extends Controller implements HasMiddleware
 
     /**
     * @OA\Put(
-    *     path="/categories/{id}",
+    *     path="/category/{id}",
     *     tags={"Category"},
     *     summary="EditOneCategory",
     *     description="edit one category",
