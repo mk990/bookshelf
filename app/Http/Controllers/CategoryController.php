@@ -136,7 +136,7 @@ class CategoryController extends Controller implements HasMiddleware
     *                 default="null",
     *                 example="writer description",
     *             ),
-    *          
+    *
     *         )
     *     ),
     *     @OA\Response(
@@ -152,7 +152,6 @@ class CategoryController extends Controller implements HasMiddleware
     * )
     * Update the specified resource in storage.
     */
-    
     public function update(Request $request, Int $id)
     {
         $request->validate([

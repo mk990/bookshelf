@@ -108,7 +108,8 @@ class BookController extends Controller implements HasMiddleware
             return response()->json(['error' => 'Book not found'], 400);
         }
     }
-/**
+
+    /**
     * @OA\Put(
     *     path="/book/{id}",
     *     tags={"Book"},

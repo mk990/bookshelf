@@ -21,7 +21,8 @@ class AuthController extends Controller implements HasMiddleware
             new Middleware('auth', except: ['login', 'register']),
         ];
     }
-/**
+
+    /**
      * @OA\Post(
      *     path="/auth/register",
      *     tags={"Login & Register"},
@@ -53,25 +54,25 @@ class AuthController extends Controller implements HasMiddleware
      *                 default="null",
      *                 example="abedi"
      *             ),
-     *            @OA\Property(
- *                 property="email",
- *                 type="string",
- *                 description="email",
- *                 example="ali23@example.com"
- *             ),
- *                 @OA\Property(
- *                 property="password",
- *                 type="string",
- *                 description="password",
- *                 example="password"
- *             ),
- *                 @OA\Property(
- *                 property="password_confirmation",
- *                 type="string",
- *                 description="password_confirmation",
- *                 example="password"
- *             )
-     *         
+     *             @OA\Property(
+     *                 property="email",
+     *                 type="string",
+     *                 description="email",
+     *                 example="ali23@example.com"
+     *             ),
+     *             @OA\Property(
+     *                 property="password",
+     *                 type="string",
+     *                 description="password",
+     *                 example="password"
+     *             ),
+     *             @OA\Property(
+     *                 property="password_confirmation",
+     *                 type="string",
+     *                 description="password_confirmation",
+     *                 example="password"
+     *             )
+     *
      *         )
      *     )
      * )
