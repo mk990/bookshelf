@@ -20,7 +20,7 @@ use Illuminate\Http\JsonResponse;
 * )
 * @OA\Server(url=L5_SWAGGER_CONST_HOST)
 * @OA\SecurityScheme(
-*     type="apiKey",
+*     type="http",
 *     description="Login with username and password to get the authentication token <div>Example: Bearer token</div>",
 *     name="Authorization",
 *     in="header",
@@ -51,7 +51,6 @@ abstract class Controller
         return response()->json($data, $status);
     }
 
-    // FIXME: fix errors type
     /**
     * @OA\Schema(
     *     schema="ErrorModel",
@@ -78,5 +77,80 @@ abstract class Controller
     {
         $data = ['message' => $message, 'errors' => $errors ?: []];
         return response()->json($data, $status);
+    }
+
+    /**
+     * @OA\Schema(
+     *     schema="Previous",
+     *     title="Previous",
+     *     description="Represents a link",
+     *     @OA\Property(
+     *         property="url",
+     *         type="string",
+     *         description="Link URL",
+     *         example=null
+     *     ),
+     *     @OA\Property(
+     *         property="label",
+     *         type="string",
+     *         description="Link label",
+     *         example="&laquo; Previous"
+     *     ),
+     *     @OA\Property(
+     *         property="active",
+     *         type="boolean",
+     *         description="Indicates whether the link is active"
+     *     )
+     * )
+     *
+     * @OA\Schema(
+     *     schema="Links",
+     *     title="Links ",
+     *     description="Represents an active link",
+     *     @OA\Property(
+     *         property="url",
+     *         type="string",
+     *         description="Link URL",
+     *         example="http://your-url/api/category?page=0"
+     *     ),
+     *     @OA\Property(
+     *         property="label",
+     *         type="string",
+     *         description="Link label",
+     *         example="1"
+     *     ),
+     *     @OA\Property(
+     *         property="active",
+     *         type="boolean",
+     *         description="Indicates whether the link is active",
+     *         example=true
+     *     )
+     * )
+     * @OA\Schema(
+     *     schema="Next",
+     *     title="Next",
+     *     description="Represents an active link",
+     *     @OA\Property(
+     *         property="url",
+     *         type="string",
+     *         description="Link URL",
+     *         example=null
+     *     ),
+     *     @OA\Property(
+     *         property="label",
+     *         type="string",
+     *         description="Link label",
+     *         example="Next &raquo;"
+     *     ),
+     *     @OA\Property(
+     *         property="active",
+     *         type="boolean",
+     *         description="Indicates whether the link is active",
+     *         example=false
+     *     )
+     * )
+     */
+    private function schema()
+    {
     }
 }

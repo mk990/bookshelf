@@ -10,10 +10,11 @@ class ExampleController extends Controller
     * @OA\Get(
     *     path="/test",
     *     description="Test page",
+    *     tags={"Test"},
     *     @OA\Response(
     *         response=200,
     *         description="Success Message",
-    *         @OA\JsonContent(ref="#/components/schemas/BookModel"),
+    *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
     *     ),
     *     @OA\Response(
     *         response=400,

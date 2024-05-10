@@ -1,96 +1,52 @@
-## About Bookshelf
-__________________________________________________________________________
-Bookshelf is a new web application for fast access all people to all books 
+# About Bookshelf
 
-- Development Tools : Laravel freamwork
+-----
 
-# Features
-__________________________________________________
+Bookshelf is a new web application for fast access all people to all books
+
+- Development Tools : Laravel framework
+
+## Features
+
+-----
+
 - users is access to add book in website
 - access download The desired book
 - Introduction best books in year
 - We will edit soon ♻️
+
 ## Install
-__________________________________________________________________________
+
+-----
+
 To install, you need to do the following steps in the project's command line or terminal
 
+### step 1: clone bookshelf
 
-### step 1 : clone bookshelf
-
-```
-	git clone <address github file>
-```
-
-
-### step 2 : install packages
-
-```
-	composer install or composer i
+```sh
+git clone https://github.com/mk990/bookshelf.git
 ```
 
+### step 2: install packages
 
-### step 3 : add .env file
-
-```
-	php artisan env:generate
-```
-
-
-### step 4 : 
-
-
-```
-	copy data .env.example in .env 
+```sh
+composer install
+cp .env.example .env 
+php artisan sqlite:generate
+php artisan key:generate
+php artisan jwt:secret
+run: php artisan migrate 
 ```
 
-### step 5 : add database.sqlite file
+### Run project
 
-```
-	php artisan sqlite:generate
-```
-
-### step 6 : Generate key application
-
-```
-	 php artisan key:generate
+```sh
+php artisan serve
 ```
 
+well , you can open the `http://127.0.0.1:8000` and watch bookshelf
 
-### step 7 : Generate key secret auth
-
-```
-	  php artisan jwt:secret
-```
-
-
-### step 8 : Run database or Refresh database
-
-```
-	   run: php artisan migrate 
-	   refresh: php artisan migrate:fresh
-```
-
-
-### step 9 : Run project
-
-```
-	    php artisan serve
-```
-
-well , you can open the "http://127.0.0.1:8000" and watch bookshelf
-## Custumize database
-__________________________________________________________________________
-Change the following values according to your desire.
-
-```
-DB_CONNECTION=sqlite
-# DB_HOST=127.0.0.1
-# DB_PORT=3306
-# DB_DATABASE=laravel
-# DB_USERNAME=root
-# DB_PASSWORD=
-```
-
+-----
 
 If you have done the above steps and have a problem, send a message.
 
@@ -98,8 +54,8 @@ If you have done the above steps and have a problem, send a message.
 
 **Free for All :** ❤️
 
-# developed by
+### developed by
 
+- [**mohammad hemmati](https://github.com/mk990)
 - [**Emad shirzad](https://github.com/Emadshirzad)
 - [**Mehdi Abedi](https://github.com/mehdiabedimehr)
-- [**mohammad hemmati](https://github.com/mk990)

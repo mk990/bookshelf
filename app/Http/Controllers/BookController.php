@@ -18,7 +18,6 @@ class BookController extends Controller implements HasMiddleware
         ];
     }
 
-    // FIXME: fix pagination schema
     /**
     * @OA\Get(
     *     path="/book",
@@ -37,7 +36,73 @@ class BookController extends Controller implements HasMiddleware
     *     @OA\Response(
     *         response=200,
     *         description="Success Message",
-    *         @OA\JsonContent(ref="#/components/schemas/BookList"),
+    *         @OA\JsonContent(
+    *             @OA\Property(
+    *                 property="current_page",
+    *                 type="integer",
+    *                 format="int32",
+    *                 description="Current page number"
+    *             ),
+    *             @OA\Property(
+    *                 property="data",
+    *                 type="array",
+    *                 @OA\Items(ref="#/components/schemas/BookModel"),
+    *                 description="List of item"
+    *             ),
+    *             @OA\Property(
+    *                 property="first_page_url",
+    *                 type="string",
+    *                 format="uri",
+    *                 description="First page URL"
+    *             ),
+    *             @OA\Property(
+    *                 property="from",
+    *                 type="integer",
+    *                 format="int32",
+    *                 description="First item number in the current page"
+    *             ),
+    *             @OA\Property(
+    *                 property="last_page",
+    *                 type="integer",
+    *                 format="int32",
+    *                 description="Last page number"
+    *             ),
+    *             @OA\Property(
+    *                 property="links",
+    *                 type="array",
+    *                 @OA\Items(
+    *                     oneOf={
+    *                         @OA\Schema(ref="#/components/schemas/Previous"),
+    *                         @OA\Schema(ref="#/components/schemas/Links"),
+    *                         @OA\Schema(ref="#/components/schemas/Next")
+    *                     }
+    *                 ),
+    *                 description="Links"
+    *             ),
+    *             @OA\Property(
+    *                 property="last_page_url",
+    *                 type="string",
+    *                 format="uri",
+    *                 description="Last page URL"
+    *             ),
+    *             @OA\Property(
+    *                 property="next_page_url",
+    *                 type="string",
+    *                 format="uri",
+    *                 description="Next page URL"
+    *             ),
+    *             @OA\Property(
+    *                 property="path",
+    *                 type="string",
+    *                 description="Path"
+    *             ),
+    *             @OA\Property(
+    *                 property="per_page",
+    *                 type="integer",
+    *                 format="int32",
+    *                 description="Items per page"
+    *             )
+    *         ),
     *     ),
     *     @OA\Response(
     *         response=400,
