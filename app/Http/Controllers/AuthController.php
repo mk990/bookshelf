@@ -21,7 +21,65 @@ class AuthController extends Controller implements HasMiddleware
             new Middleware('auth', except: ['login', 'register']),
         ];
     }
-
+/**
+     * @OA\Post(
+     *     path="/auth/register",
+     *     tags={"Login & Register"},
+     *     summary="register",
+     *     description="register",
+     *     operationId="register",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Error",
+     *     ),
+     *     @OA\RequestBody(
+     *         description="tasks input",
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="first_name",
+     *                 type="string",
+     *                 description="first_name",
+     *                 example="mehdi"
+     *             ),
+     *             @OA\Property(
+     *                 property="last_name",
+     *                 type="string",
+     *                 description="last_name",
+     *                 default="null",
+     *                 example="abedi"
+     *             ),
+     *            @OA\Property(
+ *                 property="email",
+ *                 type="string",
+ *                 description="email",
+ *                 example="ali23@example.com"
+ *             ),
+ *                 @OA\Property(
+ *                 property="password",
+ *                 type="string",
+ *                 description="password",
+ *                 example="password"
+ *             ),
+ *                 @OA\Property(
+ *                 property="password_confirmation",
+ *                 type="string",
+ *                 description="password_confirmation",
+ *                 example="password"
+ *             )
+     *         
+     *         )
+     *     )
+     * )
+     *
+     * Get a JWT via given credentials.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function register(Request $request)
     {
         $request->validate([

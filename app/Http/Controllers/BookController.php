@@ -108,10 +108,59 @@ class BookController extends Controller implements HasMiddleware
             return response()->json(['error' => 'Book not found'], 400);
         }
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
+/**
+    * @OA\Put(
+    *     path="/book/{id}",
+    *     tags={"Book"},
+    *     summary="EditOneBook",
+    *     description="edit one book",
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="integer"
+    *         )
+    *     ),
+    *     @OA\RequestBody(
+    *         description="tasks input",
+    *         required=true,
+    *         @OA\JsonContent(
+    *             @OA\Property(
+    *                 property="title",
+    *                 type="string",
+    *                 description="title",
+    *                 example="book name"
+    *             ),
+    *             @OA\Property(
+    *                 property="author",
+    *                 type="string",
+    *                 description="author",
+    *                 default="null",
+    *                 example="writer book",
+    *             ),
+    *             @OA\Property(
+    *                 property="price",
+    *                 type="integer",
+    *                 description="price",
+    *                 default="null",
+    *                 example="price book",
+    *             )
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/BookModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an 'unexpected' error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     ),security={{"api_key": {}}}
+    * )
+    * Update the specified resource in storage.
+    */
     public function update(Request $request, Int $id)
     {
         $request->validate([

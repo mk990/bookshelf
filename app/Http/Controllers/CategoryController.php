@@ -19,9 +19,35 @@ class CategoryController extends Controller implements HasMiddleware
         ];
     }
 
+    // FIXME: fix pagination schema
     /**
-     * Display a listing of the resource.
-     */
+    * @OA\Get(
+    *     path="/categories",
+    *     tags={"Category"},
+    *     summary="listAllCategory",
+    *     description="list all category",
+    *     @OA\Parameter(
+    *         name="page",
+    *         in="query",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="string",
+    *             default="1"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/BookModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an ""unexpected"" error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     )
+    * )
+    * Display the specified resource.
+    */
     public function index()
     {
         return Category::latest()->paginate(20);
@@ -41,8 +67,32 @@ class CategoryController extends Controller implements HasMiddleware
     }
 
     /**
-     * Display the specified resource.
-     */
+    * @OA\Get(
+    *     path="/categories/{id}",
+    *     tags={"Category"},
+    *     summary="getOneCategory",
+    *     description="get One category",
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="integer"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/CategoryModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an ""unexpected"" error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     )
+    * )
+    * Display the specified resource.
+    */
     public function show(Int $id)
     {
         try {
@@ -56,8 +106,53 @@ class CategoryController extends Controller implements HasMiddleware
     }
 
     /**
-     * Update the specified resource in storage.
-     */
+    * @OA\Put(
+    *     path="/categories/{id}",
+    *     tags={"Category"},
+    *     summary="EditOneCategory",
+    *     description="edit one category",
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="integer"
+    *         )
+    *     ),
+    *     @OA\RequestBody(
+    *         description="tasks input",
+    *         required=true,
+    *         @OA\JsonContent(
+    *             @OA\Property(
+    *                 property="name",
+    *                 type="string",
+    *                 description="name",
+    *                 example="category name"
+    *             ),
+    *             @OA\Property(
+    *                 property="description",
+    *                 type="string",
+    *                 description="description",
+    *                 default="null",
+    *                 example="writer description",
+    *             ),
+    *          
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/BookModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an 'unexpected' error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     ),security={{"api_key": {}}}
+    * )
+    * Update the specified resource in storage.
+    */
+    
     public function update(Request $request, Int $id)
     {
         $request->validate([
