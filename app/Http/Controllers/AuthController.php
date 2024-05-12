@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use RuntimeException;
+use Tymon\JWTAuth\JWTGuard;
 
 class AuthController extends Controller implements HasMiddleware
 {
@@ -223,7 +225,11 @@ class AuthController extends Controller implements HasMiddleware
     */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        $guard = auth('api');
+        if (!$guard instanceof JWTGuard) {
+            throw new RuntimeException('Wrong guard returned.');
+        }
+        return $this->respondWithToken($guard->refresh());
     }
 
     /**
@@ -235,10 +241,14 @@ class AuthController extends Controller implements HasMiddleware
      */
     protected function respondWithToken($token)
     {
+        $guard = auth('api');
+        if (!$guard instanceof JWTGuard) {
+            throw new RuntimeException('Wrong guard returned.');
+        }
         return response()->json([
             'access_token' => $token,
             'token_type'   => 'bearer',
-            'expires_in'   => auth()->factory()->getTTL() * 60
+            'expires_in'   => $guard->factory()->getTTL() * 60
         ]);
     }
 
