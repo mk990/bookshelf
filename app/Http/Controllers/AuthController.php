@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Rules\CheckOldPassword;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller implements HasMiddleware
@@ -225,7 +225,7 @@ class AuthController extends Controller implements HasMiddleware
     */
     public function refresh()
     {
-        return $this->respondWithToken(auth()->refresh());
+        return $this->respondWithToken(Auth::refresh());
     }
 
     /**
@@ -237,11 +237,10 @@ class AuthController extends Controller implements HasMiddleware
      */
     protected function respondWithToken($token)
     {
-        $auth = auth();
         return response()->json([
             'access_token' => $token,
             'token_type'   => 'bearer',
-            'expires_in'   => $auth->factory()->getTTL() * 60
+            'expires_in'   => Auth::factory()->getTTL() * 60
         ]);
     }
 
