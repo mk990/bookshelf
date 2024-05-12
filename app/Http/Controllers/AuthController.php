@@ -48,20 +48,20 @@ class AuthController extends Controller implements HasMiddleware
      *                 property="first_name",
      *                 type="string",
      *                 description="first_name",
-     *                 example="mehdi"
+     *                 example="mohammad"
      *             ),
      *             @OA\Property(
      *                 property="last_name",
      *                 type="string",
      *                 description="last_name",
      *                 default="null",
-     *                 example="abedi"
+     *                 example="ahmadi"
      *             ),
      *             @OA\Property(
      *                 property="email",
      *                 type="string",
      *                 description="email",
-     *                 example="ali23@example.com"
+     *                 example="test@example.com"
      *             ),
      *             @OA\Property(
      *                 property="password",
@@ -94,7 +94,7 @@ class AuthController extends Controller implements HasMiddleware
         ]);
 
         $user = User::create($request->all());
-        return response()->json($user);
+        return $this->success($user);
     }
 
     /**
@@ -172,7 +172,7 @@ class AuthController extends Controller implements HasMiddleware
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        return $this->success(auth()->user());
     }
 
     /**
@@ -199,8 +199,7 @@ class AuthController extends Controller implements HasMiddleware
     public function logout()
     {
         auth()->logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
+        return $this->success(['message' => 'Successfully logged out']);
     }
 
     /**
@@ -238,16 +237,12 @@ class AuthController extends Controller implements HasMiddleware
      */
     protected function respondWithToken($token)
     {
+        $auth = auth();
         return response()->json([
             'access_token' => $token,
             'token_type'   => 'bearer',
-            'expires_in'   => auth()->factory()->getTTL() * 60
+            'expires_in'   => $auth->factory()->getTTL() * 60
         ]);
-    }
-
-    public function getResource()
-    {
-        // ...
     }
 
     /**
@@ -299,17 +294,15 @@ class AuthController extends Controller implements HasMiddleware
             'current_password' => 'required',
             'new_password'     => 'required|confirmed',
         ]);
+
         /** @var \App\Models\User $user */
         $user = auth()->user();
-
         try {
             if (!Hash::check($request->current_password, $user->password)) {
                 return $this->error('The current password is incorrect.');
             }
-
             $user->update(['password' => Hash::make($request->new_password)]);
-
-            return $this->success('Password changed successfully');
+            return $this->success(['message'=>'Password changed successfully']);
         } catch (Exception $e) {
             return $this->error('An error occurred while changing the password.');
         }
