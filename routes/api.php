@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\ExampleController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,7 @@ Route::group([
     Route::post('register', [AuthController::class, 'register']);
     Route::get('refresh', [AuthController::class, 'refresh']);
     Route::get('me', [AuthController::class, 'me']);
+    Route::post('change-password',[AuthController::class,'changePassword']);
 });
 
 Route::group([
@@ -41,3 +43,5 @@ Route::group([
 });
 
 Route::get('test', [ExampleController::class, 'test']);
+
+//Route::post('change-password',[AuthController::class,'changePassword']);

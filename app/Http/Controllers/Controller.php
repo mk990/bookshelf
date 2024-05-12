@@ -23,7 +23,7 @@ use Illuminate\Http\JsonResponse;
 *     type="http",
 *     description="Login with username and password to get the authentication token <div>Example: Bearer token</div>",
 *     name="Authorization",
-*     in="header",
+*      in="header",
 *     scheme="Bearer",
 *     bearerFormat="JWT",
 *     securityScheme="api_key",
