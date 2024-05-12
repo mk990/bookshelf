@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Rules\CheckOldPassword;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller implements HasMiddleware
 {
@@ -224,11 +225,7 @@ class AuthController extends Controller implements HasMiddleware
     */
     public function refresh()
     {
-        $guard = auth('api');
-        if (!$guard instanceof JWTGuard) {
-            throw new RuntimeException('Wrong guard returned.');
-        }
-        return $this->respondWithToken($guard->refresh());
+        return $this->respondWithToken(Auth::refresh());
     }
 
     /**
@@ -240,15 +237,10 @@ class AuthController extends Controller implements HasMiddleware
      */
     protected function respondWithToken($token)
     {
-        $auth = auth();
-        $guard = auth('api');
-        if (!$guard instanceof JWTGuard) {
-            throw new RuntimeException('Wrong guard returned.');
-        }
         return response()->json([
             'access_token' => $token,
             'token_type'   => 'bearer',
-            'expires_in'   => auth()->factory()->getTTL() * 60
+            'expires_in'   => Auth::factory()->getTTL() * 60
         ]);
     }
 
@@ -302,8 +294,7 @@ class AuthController extends Controller implements HasMiddleware
             'new_password'     => 'required|confirmed',
         ]);
 
-        /** @var \App\Models\User $user */
-        $user = auth()->user();
+        $user = User::auth();
         try {
             if (!Hash::check($request->current_password, $user->password)) {
                 return $this->error('The current password is incorrect.');
