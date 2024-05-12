@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Rules\CheckOldPassword;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
-use RuntimeException;
-use Tymon\JWTAuth\JWTGuard;
 
 class AuthController extends Controller implements HasMiddleware
 {
@@ -47,20 +47,20 @@ class AuthController extends Controller implements HasMiddleware
      *                 property="first_name",
      *                 type="string",
      *                 description="first_name",
-     *                 example="mehdi"
+     *                 example="mohammad"
      *             ),
      *             @OA\Property(
      *                 property="last_name",
      *                 type="string",
      *                 description="last_name",
      *                 default="null",
-     *                 example="abedi"
+     *                 example="ahmadi"
      *             ),
      *             @OA\Property(
      *                 property="email",
      *                 type="string",
      *                 description="email",
-     *                 example="ali23@example.com"
+     *                 example="test@example.com"
      *             ),
      *             @OA\Property(
      *                 property="password",
@@ -93,7 +93,7 @@ class AuthController extends Controller implements HasMiddleware
         ]);
 
         $user = User::create($request->all());
-        return response()->json($user);
+        return $this->success($user);
     }
 
     /**
@@ -126,7 +126,7 @@ class AuthController extends Controller implements HasMiddleware
      *                 type="string",
      *                 description="password",
      *                 default="null",
-     *                 example="password",
+     *                 example="password2",
      *             )
      *         )
      *     )
@@ -171,7 +171,7 @@ class AuthController extends Controller implements HasMiddleware
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        return $this->success(auth()->user());
     }
 
     /**
@@ -198,8 +198,7 @@ class AuthController extends Controller implements HasMiddleware
     public function logout()
     {
         auth()->logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
+        return $this->success(['message' => 'Successfully logged out']);
     }
 
     /**
@@ -241,6 +240,7 @@ class AuthController extends Controller implements HasMiddleware
      */
     protected function respondWithToken($token)
     {
+        $auth = auth();
         $guard = auth('api');
         if (!$guard instanceof JWTGuard) {
             throw new RuntimeException('Wrong guard returned.');
@@ -248,12 +248,70 @@ class AuthController extends Controller implements HasMiddleware
         return response()->json([
             'access_token' => $token,
             'token_type'   => 'bearer',
-            'expires_in'   => $guard->factory()->getTTL() * 60
+            'expires_in'   => auth()->factory()->getTTL() * 60
         ]);
     }
 
-    public function getResource()
+    /**
+    * @OA\Post(
+    *     path="/auth/change-password",
+    *     tags={"Login & Register"},
+    *     summary="Change user password",
+    *     description="Change user password",
+    *     @OA\RequestBody(
+    *         description="tasks input",
+    *         required=true,
+    *         @OA\JsonContent(
+    *             @OA\Property(
+    *                 property="current_password",
+    *                 type="string",
+    *                 description="current password",
+    *                 example="******"
+    *             ),
+    *             @OA\Property(
+    *                 property="new_password",
+    *                 type="string",
+    *                 description="new password",
+    *                 example="******",
+    *             ),
+    *             @OA\Property(
+    *                 property="new_password_confirmation",
+    *                 type="string",
+    *                 description="confirmation your password",
+    *                 example="******",
+    *             )
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an 'unexpected' error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     ),security={{"api_key": {}}}
+    * )
+    * change password
+    */
+    public function changePassword(Request $request)
     {
-        // ...
+        $request->validate([
+            'current_password' => 'required',
+            'new_password'     => 'required|confirmed',
+        ]);
+
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+        try {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return $this->error('The current password is incorrect.');
+            }
+            $user->update(['password' => Hash::make($request->new_password)]);
+            return $this->success(['message'=>'Password changed successfully']);
+        } catch (Exception $e) {
+            return $this->error('An error occurred while changing the password.');
+        }
     }
 }
