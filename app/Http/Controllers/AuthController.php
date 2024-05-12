@@ -127,7 +127,7 @@ class AuthController extends Controller implements HasMiddleware
      *                 type="string",
      *                 description="password",
      *                 default="null",
-     *                 example="password2",
+     *                 example="password",
      *             )
      *         )
      *     )
