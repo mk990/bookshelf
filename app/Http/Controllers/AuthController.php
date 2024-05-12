@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Rules\CheckOldPassword;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -126,7 +127,7 @@ class AuthController extends Controller implements HasMiddleware
      *                 type="string",
      *                 description="password",
      *                 default="null",
-     *                 example="password",
+     *                 example="password2",
      *             )
      *         )
      *     )
@@ -248,16 +249,69 @@ class AuthController extends Controller implements HasMiddleware
     {
         // ...
     }
+
+    /**
+    * @OA\Post(
+    *     path="/auth/change-password",
+    *     tags={"Login & Register"},
+    *     summary="Change user password",
+    *     description="Change user password",
+    *     @OA\RequestBody(
+    *         description="tasks input",
+    *         required=true,
+    *         @OA\JsonContent(
+    *             @OA\Property(
+    *                 property="current_password",
+    *                 type="string",
+    *                 description="current password",
+    *                 example="******"
+    *             ),
+    *             @OA\Property(
+    *                 property="new_password",
+    *                 type="string",
+    *                 description="new password",
+    *                 example="******",
+    *             ),
+    *             @OA\Property(
+    *                 property="new_password_confirmation",
+    *                 type="string",
+    *                 description="confirmation your password",
+    *                 example="******",
+    *             )
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an 'unexpected' error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     ),security={{"api_key": {}}}
+    * )
+    * change password
+    */
     public function changePassword(Request $request)
     {
         $request->validate([
-        'current_password' => ['required',new CheckOldPassword],
-        'new_password' => 'required|confirmed',
+            'current_password' => 'required',
+            'new_password'     => 'required|confirmed',
         ]);
-        $user=User::findOrFail(auth()->id());
-    
-        $user->update(['password' => Hash::make($request->new_password)]);
-        
-        return $this->success('Password change successfully');
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+
+        try {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return $this->error('The current password is incorrect.');
+            }
+
+            $user->update(['password' => Hash::make($request->new_password)]);
+
+            return $this->success('Password changed successfully');
+        } catch (Exception $e) {
+            return $this->error('An error occurred while changing the password.');
+        }
     }
 }
