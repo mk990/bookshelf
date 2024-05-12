@@ -6,36 +6,59 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Tymon\JWTAuth\Contracts\JWTSubject;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
 /**
- * @SWG\Definition(
- *     definition="User",
- *     type="array",
- *     @SWG\Items(
- *         type="object",
- *         @SWG\Property(type="string", property="user_name", description="User name"),
- *         @SWG\Property(type="array", property="education", description="Education",
- *             @SWG\Items(
- *                 @SWG\Property(property="degree", type="object",
- *                     type="array",
- *                     @SWG\Items(
- *                         @SWG\Property(property="year", type="string"),
- *                         @SWG\Property(property="name", type="string"),
- *                     ),
- *                 ),
- *                 @SWG\Property(property="hobby", type="object",
- *                     type="array",
- *                     @SWG\Items(
- *                         @SWG\Property(property="type", type="string"),
- *                         @SWG\Property(property="description", type="string"),
- *                     ),
- *                 ),
- *             ),
- *         ),
- *     ),
- * ),
- */
+* @OA\Schema(
+*     schema="UserModel",
+*     title="User Model",
+*     description="Represents a user",
+*     @OA\Property(
+*         property="id",
+*         type="integer",
+*         format="int32",
+*         description="user ID"
+*     ),
+*     @OA\Property(
+*         property="first_name",
+*         type="string",
+*         description="first_name"
+*     ),
+*     @OA\Property(
+*         property="last_name",
+*         type="string",
+*         description="last name"
+*     ),
+*     @OA\Property(
+*         property="email",
+*         type="string",
+*         description="email"
+*     ),
+*     @OA\Property(
+*         property="email_verified_at",
+*         type="string",
+*         format="date-time",
+*         description="email verified date"
+*     ),
+*     @OA\Property(
+*         property="is_admin",
+*         type="boolean",
+*         description="user role"
+*     ),
+*     @OA\Property(
+*         property="created_at",
+*         type="string",
+*         format="date-time",
+*         description="created date"
+*     ),
+*     @OA\Property(
+*         property="updated_at",
+*         type="string",
+*         format="date-time",
+*         description="updated date"
+*     ),
+* )
+*/
 class User extends Authenticatable implements JWTSubject
 {
     use HasFactory;
