@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Rules\CheckOldPassword;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller implements HasMiddleware
 {
@@ -245,5 +247,17 @@ class AuthController extends Controller implements HasMiddleware
     public function getResource()
     {
         // ...
+    }
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+        'current_password' => ['required',new CheckOldPassword],
+        'new_password' => 'required|confirmed',
+        ]);
+        $user=User::findOrFail(auth()->id());
+    
+        $user->update(['password' => Hash::make($request->new_password)]);
+        
+        return $this->success('Password change successfully');
     }
 }
