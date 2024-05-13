@@ -101,47 +101,45 @@ class AuthController extends Controller implements HasMiddleware
     }
 
     /**
-    * @OA\Post(
-    *     path="/auth/login",
-    *     tags={"Authentication"},
-    *     summary="login",
-    *     description="login",
-    *     operationId="login",
-    *     @OA\Response(
-    *         response=200,
-    *         description="Success Message",
-    *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
-    *     ),
-    *     @OA\Response(
-    *         response=400,
-    *         description="an 'unexpected' error",
-    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-    *     ),
-    *     @OA\RequestBody(
-    *         description="tasks input",
-    *         required=true,
-    *         @OA\JsonContent(
-    *             @OA\Property(
-    *                 property="email",
-    *                 type="string",
-    *                 description="email",
-    *                 example="test@example.com"
-    *             ),
-    *             @OA\Property(
-    *                 property="password",
-    *                 type="string",
-    *                 description="password",
-    *                 default="null",
-    *                 example="password2",
-    *             )
-    *         )
-    *     )
-    * )
-    *
-    * Get a JWT via given credentials.
-    *
-    * @return \Illuminate\Http\JsonResponse
-    */
+     * @OA\Post(
+     *     path="/auth/login",
+     *     tags={"Login & Register"},
+     *     summary="login",
+     *     description="login",
+     *     operationId="login",
+     *     @OA\Response(
+     *         response="200",
+     *         description="Success",
+     *     ),
+     *     @OA\Response(
+     *         response="400",
+     *         description="Error",
+     *     ),
+     *     @OA\RequestBody(
+     *         description="tasks input",
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="email",
+     *                 type="string",
+     *                 description="email",
+     *                 example="test@example.com"
+     *             ),
+     *             @OA\Property(
+     *                 property="password",
+     *                 type="string",
+     *                 description="password",
+     *                 default="null",
+     *                 example="password",
+     *             )
+     *         )
+     *     )
+     * )
+     *
+     * Get a JWT via given credentials.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function login(Request $request)
     {
         $request->validate([
