@@ -103,7 +103,7 @@ class AuthController extends Controller implements HasMiddleware
     /**
      * @OA\Post(
      *     path="/auth/login",
-     *     tags={"Login & Register"},
+     *     tags={"Authentication"},
      *     summary="login",
      *     description="login",
      *     operationId="login",
