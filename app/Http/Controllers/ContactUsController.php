@@ -12,7 +12,7 @@ class ContactUsController extends Controller
  * @OA\Post(
  *     path="/contact-us",
  *     summary="Submit a contact form",
- *     tags={"Contact"},
+ *     tags={"ContactUs"},
  *     @OA\RequestBody(
  *         required=true,
  *         @OA\JsonContent(
