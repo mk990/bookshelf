@@ -10,14 +10,15 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller implements HasMiddleware
 {
     /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
+    * Create a new AuthController instance.
+    *
+    * @return void
+    */
     public static function middleware(): array
     {
         return [
@@ -26,64 +27,66 @@ class AuthController extends Controller implements HasMiddleware
     }
 
     /**
-     * @OA\Post(
-     *     path="/auth/register",
-     *     tags={"Login & Register"},
-     *     summary="register",
-     *     description="register",
-     *     operationId="register",
-     *     @OA\Response(
-     *         response="200",
-     *         description="Success",
-     *     ),
-     *     @OA\Response(
-     *         response="400",
-     *         description="Error",
-     *     ),
-     *     @OA\RequestBody(
-     *         description="tasks input",
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="first_name",
-     *                 type="string",
-     *                 description="first_name",
-     *                 example="mohammad"
-     *             ),
-     *             @OA\Property(
-     *                 property="last_name",
-     *                 type="string",
-     *                 description="last_name",
-     *                 default="null",
-     *                 example="ahmadi"
-     *             ),
-     *             @OA\Property(
-     *                 property="email",
-     *                 type="string",
-     *                 description="email",
-     *                 example="test@example.com"
-     *             ),
-     *             @OA\Property(
-     *                 property="password",
-     *                 type="string",
-     *                 description="password",
-     *                 example="password"
-     *             ),
-     *             @OA\Property(
-     *                 property="password_confirmation",
-     *                 type="string",
-     *                 description="password_confirmation",
-     *                 example="password"
-     *             )
-     *
-     *         )
-     *     )
-     * )
-     *
-     * Get a JWT via given credentials.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    * @OA\Post(
+    *     path="/auth/register",
+    *     tags={"Authentication"},
+    *     summary="register",
+    *     description="register",
+    *     operationId="register",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/UserModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an 'unexpected' error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     ),
+    *     @OA\RequestBody(
+    *         description="tasks input",
+    *         required=true,
+    *         @OA\JsonContent(
+    *             @OA\Property(
+    *                 property="first_name",
+    *                 type="string",
+    *                 description="first_name",
+    *                 example="mohammad"
+    *             ),
+    *             @OA\Property(
+    *                 property="last_name",
+    *                 type="string",
+    *                 description="last_name",
+    *                 default="null",
+    *                 example="ahmadi"
+    *             ),
+    *             @OA\Property(
+    *                 property="email",
+    *                 type="string",
+    *                 description="email",
+    *                 example="test@example.com"
+    *             ),
+    *             @OA\Property(
+    *                 property="password",
+    *                 type="string",
+    *                 description="password",
+    *                 example="password"
+    *             ),
+    *             @OA\Property(
+    *                 property="password_confirmation",
+    *                 type="string",
+    *                 description="password_confirmation",
+    *                 example="password"
+    *             )
+    *
+    *         )
+    *     )
+    * )
+    *
+    * Get a JWT via given credentials.
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
     public function register(Request $request)
     {
         $request->validate([
@@ -152,24 +155,26 @@ class AuthController extends Controller implements HasMiddleware
     }
 
     /**
-     * @OA\Get(
-     *     path="/auth/me",
-     *     tags={"Login & Register"},
-     *     summary="my info",
-     *     description="my info",
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success Message"
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="an ""unexpected"" error"
-     *     ),security={{"api_key": {}}}
-     * )
-     * Get the authenticated User.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    * @OA\Get(
+    *     path="/auth/me",
+    *     tags={"Authentication"},
+    *     summary="my info",
+    *     description="my info",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/UserModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an 'unexpected' error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     ),security={{"api_key": {}}}
+    * )
+    * Get the authenticated User.
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
     public function me()
     {
         return $this->success(auth()->user());
@@ -178,17 +183,19 @@ class AuthController extends Controller implements HasMiddleware
     /**
     * @OA\Post(
     *     path="/auth/logout",
-    *     tags={"Login & Register"},
+    *     tags={"Authentication"},
     *     summary="logout",
     *     description="logout",
     *     operationId="logout",
     *     @OA\Response(
-    *         response="200",
-    *         description="Success",
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
     *     ),
     *     @OA\Response(
-    *         response="400",
-    *         description="Error",
+    *         response=400,
+    *         description="an 'unexpected' error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
     *     ),security={{"api_key": {}}}
     * )
     *
@@ -205,17 +212,19 @@ class AuthController extends Controller implements HasMiddleware
     /**
     * @OA\Get(
     *     path="/auth/refresh",
-    *     tags={"Login & Register"},
+    *     tags={"Authentication"},
     *     summary="refresh",
     *     description="refresh a token",
     *     operationId="refresh",
     *     @OA\Response(
-    *         response="200",
-    *         description="Success",
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
     *     ),
     *     @OA\Response(
-    *         response="400",
-    *         description="Error",
+    *         response=400,
+    *         description="an 'unexpected' error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
     *     ),security={{"api_key": {}}}
     * )
     *
@@ -229,12 +238,12 @@ class AuthController extends Controller implements HasMiddleware
     }
 
     /**
-     * Get the token array structure.
-     *
-     * @param  string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    * Get the token array structure.
+    *
+    * @param  string $token
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
     protected function respondWithToken($token)
     {
         return response()->json([
@@ -247,7 +256,7 @@ class AuthController extends Controller implements HasMiddleware
     /**
     * @OA\Post(
     *     path="/auth/change-password",
-    *     tags={"Login & Register"},
+    *     tags={"Authentication"},
     *     summary="Change user password",
     *     description="Change user password",
     *     @OA\RequestBody(
@@ -294,8 +303,7 @@ class AuthController extends Controller implements HasMiddleware
             'new_password'     => 'required|confirmed',
         ]);
 
-        /** @var \App\Models\User $user */
-        $user = auth()->user();
+        $user = User::auth();
         try {
             if (!Hash::check($request->current_password, $user->password)) {
                 return $this->error('The current password is incorrect.');
@@ -303,6 +311,7 @@ class AuthController extends Controller implements HasMiddleware
             $user->update(['password' => Hash::make($request->new_password)]);
             return $this->success(['message'=>'Password changed successfully']);
         } catch (Exception $e) {
+            Log::error($e->getMessage());
             return $this->error('An error occurred while changing the password.');
         }
     }

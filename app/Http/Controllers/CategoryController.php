@@ -23,8 +23,8 @@ class CategoryController extends Controller implements HasMiddleware
     * @OA\Get(
     *     path="/category",
     *     tags={"Category"},
-    *     summary="listAllCategory",
-    *     description="list all category",
+    *     summary="listAllItem",
+    *     description="list all Item",
     *     @OA\Parameter(
     *         name="page",
     *         in="query",
@@ -122,8 +122,8 @@ class CategoryController extends Controller implements HasMiddleware
     * @OA\Post(
     *     path="/category",
     *     tags={"Category"},
-    *     summary="MakeOneCategory",
-    *     description="make one category",
+    *     summary="MakeOneItem",
+    *     description="make one Item",
     *     @OA\RequestBody(
     *         description="tasks input",
     *         required=true,
@@ -132,7 +132,7 @@ class CategoryController extends Controller implements HasMiddleware
     *                 property="name",
     *                 type="string",
     *                 description="name",
-    *                 example="category name"
+    *                 example="Item name"
     *             ),
     *             @OA\Property(
     *                 property="description",
@@ -170,8 +170,8 @@ class CategoryController extends Controller implements HasMiddleware
     * @OA\Get(
     *     path="/category/{id}",
     *     tags={"Category"},
-    *     summary="getOneCategory",
-    *     description="get One category",
+    *     summary="getOneItem",
+    *     description="get One Item",
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -209,8 +209,8 @@ class CategoryController extends Controller implements HasMiddleware
     * @OA\Put(
     *     path="/category/{id}",
     *     tags={"Category"},
-    *     summary="EditOneCategory",
-    *     description="edit one category",
+    *     summary="EditOneItem",
+    *     description="edit one Item",
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -227,14 +227,14 @@ class CategoryController extends Controller implements HasMiddleware
     *                 property="name",
     *                 type="string",
     *                 description="name",
-    *                 example="category name"
+    *                 example="Item name"
     *             ),
     *             @OA\Property(
     *                 property="description",
     *                 type="string",
     *                 description="description",
     *                 default="null",
-    *                 example="writer description",
+    *                 example="description",
     *             ),
     *
     *         )
@@ -270,8 +270,32 @@ class CategoryController extends Controller implements HasMiddleware
     }
 
     /**
-     * Remove the specified resource from storage.
-     */
+    * @OA\Delete(
+    *     path="/category/{id}",
+    *     tags={"Category"},
+    *     summary="DeleteOneItem",
+    *     description="Delete one item",
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="integer"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an 'unexpected' error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     ),security={{"api_key": {}}}
+    * )
+    * Remove the specified resource from storage.
+    */
     public function destroy(Int $id)
     {
         try {
