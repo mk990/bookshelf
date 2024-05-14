@@ -12,8 +12,3 @@ Artisan::command('sqlite:generate', function () {
     file_put_contents($database, '');
     $this->info("SQLite database file created at {$database}");
 });
-
-Artisan::command('env:generate', function () {
-    $env = file_put_contents('.env', '');
-    $this->info(".env database file created at {$env}");
-});
