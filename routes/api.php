@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\ExampleController;
+use App\Http\Controllers\QuotesController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/user', function (Request $request) {
@@ -42,8 +43,17 @@ Route::group([
     Route::put('{id}', [CategoryController::class, 'update']);
     Route::delete('{id}', [CategoryController::class, 'destroy']);
 });
+Route::group([
+    'prefix' => 'quote'
+], function ($router) {
+    Route::get('', [QuotesController::class, 'quote']);
+    Route::post('', [QuotesController::class, 'store']);
+    Route::put('{id}', [QuotesController::class, 'update']);
+    Route::delete('{id}', [QuotesController::class, 'destroy']);
+});
 
 Route::get('test', [ExampleController::class, 'test']);
 Route::post('contact-us', [ContactUsController::class, 'contact']);
+Route::get('qoute', [QuotesController::class, 'quote']);
 
 //Route::post('change-password',[AuthController::class,'changePassword']);
