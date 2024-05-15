@@ -84,6 +84,7 @@ class QuotesController extends Controller
             $quote = Quotes::create($request->all());
             return $this->success($quote);
         } catch (Exception $e) {
+            Log::error($e->getMessage());
             $this->error('message not created');
         }
     }
@@ -145,6 +146,7 @@ class QuotesController extends Controller
             $quote->update($request->all());
             return $this->success($quote);
         } catch (Exception $e) {
+            Log::error($e->getMessage());
             $this->error('message not created');
         }
     }
