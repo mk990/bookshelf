@@ -20,6 +20,14 @@ class ExampleController extends Controller
     *         response=400,
     *         description="an ""unexpected"" error",
     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=500,
+    *         description="Internal server error",
+    *         @OA\JsonContent(
+    *             type="object",
+    *             @OA\Property(property="error", type="string", example="Internal Server Error")
+    *         )
     *     )
     * )
     */

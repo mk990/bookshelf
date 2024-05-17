@@ -3,7 +3,6 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\ExampleController;
 use App\Http\Controllers\QuotesController;
@@ -22,6 +21,8 @@ Route::group([
     Route::get('refresh', [AuthController::class, 'refresh']);
     Route::get('me', [AuthController::class, 'me']);
     Route::post('change-password', [AuthController::class, 'changePassword']);
+    Route::get('verify-email', [AuthController::class, 'verifyEmail']);
+    Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmailAddress'])->name('verification.verify');
 });
 
 Route::group([
@@ -54,6 +55,5 @@ Route::group([
 
 Route::get('test', [ExampleController::class, 'test']);
 Route::post('contact-us', [ContactUsController::class, 'contact']);
-Route::get('qoute', [QuotesController::class, 'quote']);
 
 //Route::post('change-password',[AuthController::class,'changePassword']);

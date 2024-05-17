@@ -22,7 +22,8 @@ class AuthController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth', except: ['login', 'register']),
+            new Middleware('auth', except: ['login', 'register', 'verifyEmailAddress']),
+            new Middleware('signed', only: ['verifyEmailAddress']),
         ];
     }
 
@@ -98,6 +99,50 @@ class AuthController extends Controller implements HasMiddleware
 
         $user = User::create($request->all());
         return $this->success($user);
+    }
+
+    /**
+      * @OA\Get(
+      *     path="/auth/verify-email",
+      *     tags={"Authentication"},
+      *     summary="verify email",
+      *     description="verify email",
+      *     @OA\Response(
+      *         response=200,
+      *         description="Success Message",
+      *         @OA\JsonContent(ref="#/components/schemas/UserModel"),
+      *     ),
+      *     @OA\Response(
+      *         response=400,
+      *         description="an 'unexpected' error",
+      *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+      *     ),security={{"api_key": {}}}
+      * )
+      * Get the authenticated User.
+      *
+      * @return \Illuminate\Http\JsonResponse
+      */
+    public function verifyEmail()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $user->sendEmailVerificationNotification();
+        return $this->success($user);
+    }
+
+    public function verifyEmailAddress(Request $request)
+    {
+        $user = User::find($request->route('id'));
+
+        if ($user->hasVerifiedEmail()) {
+            return $this->success('Email already verified.');
+        }
+
+        if ($user->markEmailAsVerified()) {
+            return $this->success($user);
+        }
+
+        return $this->error("$user->email could not be verified.");
     }
 
     /**
@@ -303,7 +348,8 @@ class AuthController extends Controller implements HasMiddleware
             'new_password'     => 'required|confirmed',
         ]);
 
-        $user = User::auth();
+        /** @var User $user */
+        $user = Auth::user();
         try {
             if (!Hash::check($request->current_password, $user->password)) {
                 return $this->error('The current password is incorrect.');
