@@ -172,7 +172,6 @@ class BookController extends Controller implements HasMiddleware
         ]);
 
         try {
-            $request->merge(['user_id' => auth()->user()->id]);
             $book = Book::create($request->all());
             return $this->success($book);
         } catch(Exception $e) {
@@ -280,7 +279,6 @@ class BookController extends Controller implements HasMiddleware
             'price'   => 'required|numeric',
             'picture' => 'required|url',
         ]);
-        $request->merge(['user_id' => auth()->user()->id]);
 
         try {
             $book = Book::findOrFail($id);

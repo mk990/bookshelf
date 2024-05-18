@@ -52,14 +52,14 @@ class AuthController extends Controller implements HasMiddleware
     *                 property="first_name",
     *                 type="string",
     *                 description="first_name",
-    *                 example="mohammad"
+    *                 example="string"
     *             ),
     *             @OA\Property(
     *                 property="last_name",
     *                 type="string",
     *                 description="last_name",
     *                 default="null",
-    *                 example="ahmadi"
+    *                 example="string"
     *             ),
     *             @OA\Property(
     *                 property="email",
@@ -126,6 +126,9 @@ class AuthController extends Controller implements HasMiddleware
     {
         /** @var User $user */
         $user = Auth::user();
+        if ($user->hasVerifiedEmail()) {
+            return $this->success('Email already verified.');
+        }
         $user->sendEmailVerificationNotification();
         return $this->success($user);
     }
