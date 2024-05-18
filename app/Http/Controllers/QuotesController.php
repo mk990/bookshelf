@@ -11,7 +11,7 @@ class QuotesController extends Controller
 {
     /**
     * @OA\Get(
-    *     path="/qoute",
+    *     path="/quote",
     *     tags={"Quotes"},
     *     summary="Random quotes",
     *     description="a random quotes",
