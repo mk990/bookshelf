@@ -3,14 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Mail\Forgot;
+use App\Mail\ForgotPassword as MailForgotPassword;
+use App\Models\ForgotPassword;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
+
+use function Laravel\Prompts\error;
+use function PHPUnit\Framework\isNull;
 
 class AuthController extends Controller implements HasMiddleware
 {
@@ -22,7 +32,7 @@ class AuthController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth', except: ['login', 'register', 'verifyEmailAddress']),
+            new Middleware('auth', except: ['login', 'register', 'verifyEmailAddress', 'forgotPassword']),
             new Middleware('signed', only: ['verifyEmailAddress']),
         ];
     }
@@ -102,26 +112,26 @@ class AuthController extends Controller implements HasMiddleware
     }
 
     /**
-      * @OA\Get(
-      *     path="/auth/verify-email",
-      *     tags={"Authentication"},
-      *     summary="verify email",
-      *     description="verify email",
-      *     @OA\Response(
-      *         response=200,
-      *         description="Success Message",
-      *         @OA\JsonContent(ref="#/components/schemas/UserModel"),
-      *     ),
-      *     @OA\Response(
-      *         response=400,
-      *         description="an 'unexpected' error",
-      *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-      *     ),security={{"api_key": {}}}
-      * )
-      * Get the authenticated User.
-      *
-      * @return \Illuminate\Http\JsonResponse
-      */
+    * @OA\Get(
+    *     path="/auth/verify-email",
+    *     tags={"Authentication"},
+    *     summary="verify email",
+    *     description="verify email",
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an 'unexpected' error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     ),security={{"api_key": {}}}
+    * )
+    * Get the authenticated User.
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
     public function verifyEmail()
     {
         /** @var User $user */
@@ -149,45 +159,47 @@ class AuthController extends Controller implements HasMiddleware
     }
 
     /**
-     * @OA\Post(
-     *     path="/auth/login",
-     *     tags={"Authentication"},
-     *     summary="login",
-     *     description="login",
-     *     operationId="login",
-     *     @OA\Response(
-     *         response="200",
-     *         description="Success",
-     *     ),
-     *     @OA\Response(
-     *         response="400",
-     *         description="Error",
-     *     ),
-     *     @OA\RequestBody(
-     *         description="tasks input",
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="email",
-     *                 type="string",
-     *                 description="email",
-     *                 example="test@example.com"
-     *             ),
-     *             @OA\Property(
-     *                 property="password",
-     *                 type="string",
-     *                 description="password",
-     *                 default="null",
-     *                 example="password",
-     *             )
-     *         )
-     *     )
-     * )
-     *
-     * Get a JWT via given credentials.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    * @OA\Post(
+    *     path="/auth/login",
+    *     tags={"Authentication"},
+    *     summary="login",
+    *     description="login",
+    *     operationId="login",
+  *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an 'unexpected' error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     ),
+    *     @OA\RequestBody(
+    *         description="tasks input",
+    *         required=true,
+    *         @OA\JsonContent(
+    *             @OA\Property(
+    *                 property="email",
+    *                 type="string",
+    *                 description="email",
+    *                 example="test@example.com"
+    *             ),
+    *             @OA\Property(
+    *                 property="password",
+    *                 type="string",
+    *                 description="password",
+    *                 default="null",
+    *                 example="password",
+    *             )
+    *         )
+    *     )
+    * )
+    *
+    * Get a JWT via given credentials.
+    *
+    * @return \Illuminate\Http\JsonResponse
+    */
     public function login(Request $request)
     {
         $request->validate([
@@ -362,6 +374,62 @@ class AuthController extends Controller implements HasMiddleware
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('An error occurred while changing the password.');
+        }
+    }
+
+    /**
+    * @OA\Post(
+    *     path="/auth/forgotPassword",
+    *     tags={"Authentication"},
+    *     summary="Forgot user password",
+    *     description="Forgot user password",
+    *     @OA\RequestBody(
+    *         description="tasks input",
+    *         required=true,
+    *         @OA\JsonContent(
+    *             @OA\Property(
+    *                 property="email",
+    *                 type="string",
+    *                 description="email",
+    *                 example="test@example.com"
+    *             ),
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an 'unexpected' error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     )
+    * )
+    * forgot password
+    */
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        try {
+            $user = User::whereEmail($request->email)->first();
+            if (!$user) {
+                return $this->error('user not found');
+            }
+
+            $token = Str()->random(60);
+            Mail::to($user->email)->send(new Forgot($user, $token), 60);
+            ForgotPassword::create([
+                'email' => $user->email,
+                'token' => $token,
+            ]);
+            return $this->success(['message' => 'Password reset link sent to your email']);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('Something went wrong');
         }
     }
 }

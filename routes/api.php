@@ -34,6 +34,7 @@ Route::group([
     Route::post('change-password', [AuthController::class, 'changePassword']);
     Route::get('verify-email', [AuthController::class, 'verifyEmail']);
     Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmailAddress'])->name('verification.verify');
+    Route::post('forgotPassword', [AuthController::class, 'forgotPassword']);
 });
 
 Route::group([
