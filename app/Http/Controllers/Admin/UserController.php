@@ -22,7 +22,7 @@ class UserController extends Controller implements HasMiddleware
     /**
     * @OA\Get(
     *     path="/admin/user",
-    *     tags={"admin_users"},
+    *     tags={"Admin Users"},
     *     summary="listAllItem",
     *     description="list all Item",
     *     @OA\Parameter(
@@ -121,7 +121,7 @@ class UserController extends Controller implements HasMiddleware
     /**
     * @OA\Get(
     *     path="/admin/user/{id}",
-    *     tags={"admin_users"},
+    *     tags={"Admin Users"},
     *     summary="getOneItem",
     *     description="get One Item",
     *     @OA\Parameter(
@@ -159,7 +159,7 @@ class UserController extends Controller implements HasMiddleware
     /**
     * @OA\Put(
     *     path="/admin/user/{id}",
-    *     tags={"admin_users"},
+    *     tags={"Admin Users"},
     *     summary="EditOneItem",
     *     description="edit one Item",
     *     @OA\Parameter(
@@ -236,7 +236,7 @@ class UserController extends Controller implements HasMiddleware
     /**
     * @OA\Delete(
     *     path="/admin/user/{id}",
-    *     tags={"admin_users"},
+    *     tags={"Admin Users"},
     *     summary="DeleteOneItem",
     *     description="Delete one Item",
     *     @OA\Parameter(

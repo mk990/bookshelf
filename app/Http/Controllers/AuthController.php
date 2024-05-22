@@ -4,23 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Mail\Forgot;
-use App\Mail\ForgotPassword as MailForgotPassword;
 use App\Models\ForgotPassword;
 use App\Models\User;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Password;
-
-use function Laravel\Prompts\error;
-use function PHPUnit\Framework\isNull;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller implements HasMiddleware
 {
@@ -417,15 +411,19 @@ class AuthController extends Controller implements HasMiddleware
         try {
             $user = User::whereEmail($request->email)->first();
             if (!$user) {
-                return $this->error('user not found');
+                sleep(2);
+                return $this->success(['message' => 'Password reset link sent to your email']);
             }
 
-            $token = Str()->random(60);
+            $token = Str::random(60);
+            ForgotPassword::updateOrCreate(
+                ['email' => $user->email],
+                [
+                    'email' => $user->email,
+                    'token' => $token,
+                ]
+            );
             Mail::to($user->email)->send(new Forgot($user, $token), 60);
-            ForgotPassword::create([
-                'email' => $user->email,
-                'token' => $token,
-            ]);
             return $this->success(['message' => 'Password reset link sent to your email']);
         } catch (Exception $e) {
             Log::error($e->getMessage());
