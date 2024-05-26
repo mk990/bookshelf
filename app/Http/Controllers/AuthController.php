@@ -417,9 +417,8 @@ class AuthController extends Controller implements HasMiddleware
             }
 
             $token = Str::random(60);
-            ForgotPassword::updateOrCreate(
-                ['email' => $user->email],
-                ['token' => $token, ]
+            ForgotPassword::create(
+                ['email' => $user->email, 'token' => $token, ]
             );
             Mail::to($user->email)->send(new Forgot($user, $token), 60);
             return $this->success(['message' => 'Password reset link sent to your email']);
@@ -437,11 +436,11 @@ class AuthController extends Controller implements HasMiddleware
     public function setForgotPassword(string $token)
     {
         try {
-            $user_token = ForgotPassword::where('token', $token)->firstOrFail();
-            if (!$user_token) {
+            $userToken = ForgotPassword::where('token', $token)->latest()->firstOrFail();
+            if (!$userToken) {
                 return $this->error('invalid token');
             }
-            $user = User::whereEmail($user_token->email)->firstOrFail();
+            $user = User::whereEmail($userToken->email)->firstOrFail();
             if (!$user) {
                 return $this->error('user not found');
             }
