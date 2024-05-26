@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller implements HasMiddleware
@@ -26,7 +27,7 @@ class AuthController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth', except: ['login', 'register', 'verifyEmailAddress', 'forgotPassword']),
+            new Middleware('auth', except: ['login', 'register', 'verifyEmailAddress', 'forgotPassword', 'getForgotPassword', 'setForgotPassword']),
             new Middleware('signed', only: ['verifyEmailAddress']),
         ];
     }
@@ -418,16 +419,37 @@ class AuthController extends Controller implements HasMiddleware
             $token = Str::random(60);
             ForgotPassword::updateOrCreate(
                 ['email' => $user->email],
-                [
-                    'email' => $user->email,
-                    'token' => $token,
-                ]
+                ['token' => $token, ]
             );
             Mail::to($user->email)->send(new Forgot($user, $token), 60);
             return $this->success(['message' => 'Password reset link sent to your email']);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Something went wrong');
+        }
+    }
+
+    public function getForgotPassword(string $token)
+    {
+        return view('forgot_password', ['token' => $token]);
+    }
+
+    public function setForgotPassword(string $token)
+    {
+        try {
+            $user_token = ForgotPassword::where('token', $token)->firstOrFail();
+            if (!$user_token) {
+                return $this->error('invalid token');
+            }
+            $user = User::whereEmail($user_token->email)->firstOrFail();
+            if (!$user) {
+                return $this->error('user not found');
+            }
+            $user->update(['password' => bcrypt(request('password'))]);
+            return $this->success($user);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('Password change failed');
         }
     }
 }
