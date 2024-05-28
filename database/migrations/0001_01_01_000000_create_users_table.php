@@ -26,7 +26,7 @@ return new class () extends Migration {
             $table->id();
             $table->string('email');
             $table->string('token');
-            $table->string('status');
+            $table->boolean('status')->default(false);
             $table->timestamps();
         });
 
