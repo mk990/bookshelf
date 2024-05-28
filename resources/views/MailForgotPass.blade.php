@@ -125,10 +125,7 @@
                             <pre
                                 style="box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; position: relative;"><code>        This password reset link will expire in 60 minutes.
         If you did not request a password reset, no further action is required.
-
-
-        Regards,&lt;br&gt;
-    Laravel
+        Regards,<br>;
 </code></pre>
 
 
@@ -164,19 +161,12 @@
                     <tr>
                         <td class="content-cell" align="center"
                             style="box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; position: relative; max-width: 100vw; padding: 32px;">
-                            <p
-                                style="box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; position: relative; line-height: 1.5em; margin-top: 0; color: #b0adc5; font-size: 12px; text-align: center;">
-                                © 2024 Laravel. All rights reserved.</p>
-
                         </td>
                     </tr>
                 </table>
             </td>
         </tr>
     </table>
-
-
-
 </body>
 
 </html>
