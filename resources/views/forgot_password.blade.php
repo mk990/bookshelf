@@ -77,9 +77,8 @@
         <form class="form-container" action="{{ route('change-password', $token) }}" method="POST">
             <h2>Forgot Password?</h2>
 
-            <input name="email" placeholder="Enter email" value="{{ request()->get('email') }}">
-            <input name="password" placeholder="Enter new password">
-            <input name="password_confirmation" placeholder="Confirm new password">
+            <input type="password" name="password" placeholder="Enter new password">
+            <input type="password" name="password_confirmation" placeholder="Confirm new password">
 
             <button type="submit">Submit</button>
         </form>

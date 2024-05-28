@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller implements HasMiddleware
@@ -415,13 +415,17 @@ class AuthController extends Controller implements HasMiddleware
                 sleep(2);
                 return $this->success(['message' => 'Password reset link sent to your email']);
             }
-
+            ForgotPassword::where('email', $user->email)->delete();
             $token = Str::random(60);
             ForgotPassword::create(
                 ['email' => $user->email, 'token' => $token, ]
             );
-            Mail::to($user->email)->send(new Forgot($user, $token), 60);
-            return $this->success(['message' => 'Password reset link sent to your email']);
+
+            if (!RateLimiter::tooManyAttempts('mail', 1, 300)) {
+                Mail::to($user->email)->send(new Forgot($user, $token), 60);
+                return $this->success(['message' => 'Password reset link sent to your email']);
+            }
+            return $this->error('Too many password reset requests. Please try again later.', status: 429);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Something went wrong');
