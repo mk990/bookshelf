@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller implements HasMiddleware
@@ -28,6 +27,7 @@ class AuthController extends Controller implements HasMiddleware
     {
         return [
             new Middleware('auth', except: ['login', 'register', 'verifyEmailAddress', 'forgotPassword', 'getForgotPassword', 'setForgotPassword']),
+            new Middleware('throttle:0,1,1', only: ['forgotPassword']),
             new Middleware('signed', only: ['verifyEmailAddress']),
         ];
     }
@@ -420,12 +420,8 @@ class AuthController extends Controller implements HasMiddleware
             ForgotPassword::create(
                 ['email' => $user->email, 'token' => $token, ]
             );
-
-            if (!RateLimiter::tooManyAttempts('mail', 1, 300)) {
-                Mail::to($user->email)->send(new Forgot($user, $token), 60);
-                return $this->success(['message' => 'Password reset link sent to your email']);
-            }
-            return $this->error('Too many password reset requests. Please try again later.', status: 429);
+            Mail::to($user->email)->send(new Forgot($user, $token));
+            return $this->success(['message' => 'Password reset link sent to your email']);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Something went wrong');
@@ -442,21 +438,19 @@ class AuthController extends Controller implements HasMiddleware
         $request->validate([
             'password'     => 'required|string|min:7|confirmed',
         ]);
-
         try {
             $forgotPassword = ForgotPassword::whereToken($token)->whereStatus(0)->latest()->firstOrFail();
             if (!$forgotPassword) {
                 return $this->error('invalid token');
             }
 
-            $user = User::whereEmail($forgotPassword->email)->firstOrFail();
-            if (!$user) {
-                return $this->error('user not found');
-            }
+            $user = User::whereEmail($forgotPassword->email)->first();
 
             $forgotPassword->status = 1;
             $forgotPassword->save();
-
+            if (!$user) {
+                return $this->error('user not found');
+            }
             $user->update(['password' => bcrypt(request('password'))]);
             return $this->success($user);
         } catch (Exception $e) {
