@@ -438,19 +438,18 @@ class AuthController extends Controller implements HasMiddleware
         $request->validate([
             'password'     => 'required|string|min:7|confirmed',
         ]);
+
         try {
-            $forgotPassword = ForgotPassword::whereToken($token)->whereStatus(0)->latest()->firstOrFail();
+            $forgotPassword = ForgotPassword::whereToken($token)->whereStatus(0)->firstOrFail();
             if (!$forgotPassword) {
                 return $this->error('invalid token');
             }
 
-            $user = User::whereEmail($forgotPassword->email)->first();
+            $user = User::whereEmail($forgotPassword->email)->firstOrFail();
 
             $forgotPassword->status = 1;
             $forgotPassword->save();
-            if (!$user) {
-                return $this->error('user not found');
-            }
+
             $user->update(['password' => bcrypt(request('password'))]);
             return $this->success($user);
         } catch (Exception $e) {
