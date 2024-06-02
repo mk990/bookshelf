@@ -114,7 +114,7 @@ class BookController extends Controller implements HasMiddleware
     */
     public function index()
     {
-        return $this->success(Book::latest()->paginate(20));
+        return $this->success(Book::latest()->whereIsVerified(1)->paginate(20));
     }
 
     /**
@@ -211,10 +211,13 @@ class BookController extends Controller implements HasMiddleware
     {
         try {
             $book = Book::findOrFail($id);
-            return response()->json($book);
+            if ($book->user_id !== auth()->id() && $book->is_verified == 0) {
+                return $this->error('forbidden', status:403);
+            }
+            return $this->success($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not found'], 400);
+            return $this->error('Book not found');
         }
     }
 
@@ -282,6 +285,10 @@ class BookController extends Controller implements HasMiddleware
 
         try {
             $book = Book::findOrFail($id);
+            if ($book->user_id !== auth()->id() || $book->is_verified == 1) {
+                return $this->error('forbidden', status:403);
+            }
+
             $book->update($request->all());
             return response()->json($book);
         } catch(Exception $e) {
@@ -321,6 +328,10 @@ class BookController extends Controller implements HasMiddleware
     {
         try {
             $book = Book::findOrFail($id);
+            if ($book->user_id !== auth()->id() || $book->is_verified == 1) {
+                return $this->error('forbidden', status:403);
+            }
+
             $book->delete();
             $id = $book->id;
             return response()->json("book $id deleted");
