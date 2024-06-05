@@ -16,7 +16,7 @@ class BookController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth', except: ['index', 'show']),
+            new Middleware('auth.admin'),
         ];
     }
 
@@ -110,7 +110,7 @@ class BookController extends Controller implements HasMiddleware
     *         response=400,
     *         description="an ""unexpected"" error",
     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-    *     )
+    *     ),security={{"api_key": {}}}
     * )
     * Display the specified resource.
     */
@@ -205,7 +205,7 @@ class BookController extends Controller implements HasMiddleware
     *         response=400,
     *         description="an ""unexpected"" error",
     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-    *     )
+    *     ),security={{"api_key": {}}}
     * )
     * Display the specified resource.
     */
@@ -279,7 +279,7 @@ class BookController extends Controller implements HasMiddleware
             'title'   => 'required',
             'author'  => 'required',
             'price'   => 'required|numeric',
-            'picture' => 'required|url',
+            // 'picture' => 'required|url',
         ]);
 
         try {
