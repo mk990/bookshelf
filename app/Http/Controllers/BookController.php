@@ -173,9 +173,6 @@ class BookController extends Controller implements HasMiddleware
 
         try {
             $book = Book::create($request->all());
-            if ($book->user_id !== auth()->id() && $book->is_verified == 0) {
-                return $this->error('forbidden', status:403);
-            }
             return $this->success($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
