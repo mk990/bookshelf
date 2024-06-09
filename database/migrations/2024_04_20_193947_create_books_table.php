@@ -18,7 +18,7 @@ return new class () extends Migration {
             $table->string('title');
             $table->string('author');
             $table->integer('price');
-            $table->boolean('is_verified')->default(false);
+            $table->boolean('verified')->default(false);
             $table->string('picture')->nullable();
             $table->timestamps();
         });
