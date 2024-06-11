@@ -35,4 +35,9 @@ class ExampleController extends Controller
     {
         return $this->success(['message'=>'hello world']);
     }
+
+    public function test1()
+    {
+        return $this->error('hello world');
+    }
 }

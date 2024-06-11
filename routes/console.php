@@ -15,6 +15,12 @@ Artisan::command('sqlite:generate', function () {
     $this->info("SQLite database file created at {$database}");
 });
 
+Artisan::command('analyze', function () {
+    $command = 'vendor/bin/phpstan analyse --ansi --memory-limit=2G';
+    $this->info('Analyze with phpstan');
+    passthru($command);
+});
+
 Schedule::command('backup:run')
     ->when(function () {
         return true;

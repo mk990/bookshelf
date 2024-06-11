@@ -81,6 +81,7 @@ Route::group([
 });
 
 Route::get('test', [ExampleController::class, 'test']);
+Route::get('test1', [ExampleController::class, 'test1']);
 Route::post('contact-us', [ContactUsController::class, 'contact']);
 
 //Route::post('change-password',[AuthController::class,'changePassword']);
