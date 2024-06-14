@@ -62,7 +62,7 @@ class Book extends Model
 {
     use HasFactory;
     protected $fillable = ['user_id', 'category_id', 'title', 'author', 'price', ''];
-    protected $hidden = ['is_verified'];
+    protected $hidden = ['verified'];
 
     public function user()
     {

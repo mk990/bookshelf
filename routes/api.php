@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
@@ -20,6 +21,16 @@ Route::group([
         Route::get('{id}', [UserController::class, 'show']);
         Route::put('{id}', [UserController::class, 'update']);
         Route::delete('{id}', [UserController::class, 'destroy']);
+    });
+    Route::group([
+        'prefix' => 'book'
+    ], function ($router) {
+        Route::get('', [AdminBookController::class, 'index']);
+        Route::post('', [AdminBookController::class, 'store']);
+        Route::get('unConfirmed', [AdminBookController::class, 'unConfirmed']);
+        Route::get('{id}', [AdminBookController::class, 'show']);
+        Route::put('{id}', [AdminBookController::class, 'update']);
+        Route::delete('{id}', [AdminBookController::class, 'destroy']);
     });
 });
 
