@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('inspire', function () {
@@ -14,4 +15,16 @@ Artisan::command('sqlite:generate', function () {
     $this->info("SQLite database file created at {$database}");
 });
 
-Schedule::command('backup:run')->everyMinute();
+Artisan::command('analyze', function () {
+    $command = 'vendor/bin/phpstan analyse --ansi --memory-limit=2G';
+    $this->info('Analyze with phpstan');
+    passthru($command);
+});
+
+Schedule::command('backup:run')
+    ->when(function () {
+        return true;
+    })
+    ->after(function () {
+        return true;
+    })->daily();

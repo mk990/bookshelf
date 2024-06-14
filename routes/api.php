@@ -33,7 +33,19 @@ Route::group([
         Route::delete('{id}', [AdminBookController::class, 'destroy']);
     });
 });
-
+Route::group([
+    'prefix' => 'admin'
+], function ($router) {
+    Route::group([
+        'prefix' => 'book'
+    ], function ($router) {
+        Route::get('', [AdminBookController::class, 'index']);
+        Route::post('', [AdminBookController::class, 'store']);
+        Route::get('{id}', [AdminBookController::class, 'show']);
+        Route::put('{id}', [AdminBookController::class, 'update']);
+        Route::delete('{id}', [AdminBookController::class, 'destroy']);
+    });
+});
 Route::group([
     'prefix' => 'auth'
 ], function ($router) {
@@ -79,6 +91,7 @@ Route::group([
 });
 
 Route::get('test', [ExampleController::class, 'test']);
+Route::get('test1', [ExampleController::class, 'test1']);
 Route::post('contact-us', [ContactUsController::class, 'contact']);
 
 //Route::post('change-password',[AuthController::class,'changePassword']);

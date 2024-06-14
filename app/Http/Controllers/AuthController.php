@@ -18,11 +18,6 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller implements HasMiddleware
 {
-    /**
-    * Create a new AuthController instance.
-    *
-    * @return void
-    */
     public static function middleware(): array
     {
         return [
