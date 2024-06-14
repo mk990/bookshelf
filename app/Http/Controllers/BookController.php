@@ -211,7 +211,7 @@ class BookController extends Controller implements HasMiddleware
     {
         try {
             $book = Book::findOrFail($id);
-            if ($book->user_id !== auth()->id() && $book->is_verified == 0) {
+            if ($book->user_id !== auth()->id() && $book->verified == 0) {
                 return $this->error('forbidden', status:403);
             }
             return $this->success($book);
@@ -285,7 +285,7 @@ class BookController extends Controller implements HasMiddleware
 
         try {
             $book = Book::findOrFail($id);
-            if ($book->user_id !== auth()->id() || $book->is_verified == 1) {
+            if ($book->user_id !== auth()->id() || $book->verified == 1) {
                 return $this->error('forbidden', status:403);
             }
 
@@ -328,7 +328,7 @@ class BookController extends Controller implements HasMiddleware
     {
         try {
             $book = Book::findOrFail($id);
-            if ($book->user_id !== auth()->id() || $book->is_verified == 1) {
+            if ($book->user_id !== auth()->id() || $book->verified == 1) {
                 return $this->error('forbidden', status:403);
             }
 
