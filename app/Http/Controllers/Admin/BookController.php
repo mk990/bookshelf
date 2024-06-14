@@ -355,4 +355,44 @@ class BookController extends Controller implements HasMiddleware
     {
         return $this->success(Book::whereVerified(0)->get());
     }
+
+    /**
+     * @OA\Put(
+     *     path="/admin/book/verify/{id}",
+     *     tags={"Admin Book"},
+     *     summary="VerifyOneItem",
+     *     description="Verify one Item",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success Message",
+     *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="an 'unexpected' error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),security={{"api_key": {}}}
+     * )
+     * Remove the specified resource from storage.
+     */
+    public function verifyBook(int $id)
+    {
+        try {
+            $book = Book::findOrFail($id);
+            $book->verified = 1;
+            $book->save();
+            return response()->json(["book $id verified"]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Book not verified'], 400);
+        }
+    }
 }
