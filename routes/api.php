@@ -22,6 +22,17 @@ Route::group([
         Route::put('{id}', [UserController::class, 'update']);
         Route::delete('{id}', [UserController::class, 'destroy']);
     });
+    Route::group([
+        'prefix' => 'book'
+    ], function ($router) {
+        Route::get('', [AdminBookController::class, 'index']);
+        Route::post('', [AdminBookController::class, 'store']);
+        Route::get('unConfirmed', [AdminBookController::class, 'unConfirmed']);
+        Route::get('{id}', [AdminBookController::class, 'show']);
+        Route::put('{id}', [AdminBookController::class, 'update']);
+        Route::put('verify/{id}', [AdminBookController::class, 'verifyBook']);
+        Route::delete('{id}', [AdminBookController::class, 'destroy']);
+    });
 });
 Route::group([
     'prefix' => 'admin'
