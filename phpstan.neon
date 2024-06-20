@@ -8,6 +8,7 @@ parameters:
 
     # Level 9 is the highest level
     level: 5
+    treatPhpDocTypesAsCertain: false
 
 #    ignoreErrors:
 #        - '#PHPDoc tag @var#'
@@ -16,4 +17,4 @@ parameters:
 #        - ./*/*/FileToBeExcluded.php
 #
 #    checkMissingIterableValueType: false
-  
+#
