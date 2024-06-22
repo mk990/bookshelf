@@ -387,7 +387,7 @@ class BookController extends Controller implements HasMiddleware
     {
         try {
             $book = Book::findOrFail($id);
-            $book->verified = 1;
+            $book->verified = true;
             $book->save();
             return response()->json(["book $id verified"]);
         } catch (Exception $e) {
