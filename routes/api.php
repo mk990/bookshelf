@@ -27,23 +27,11 @@ Route::group([
     ], function ($router) {
         Route::get('', [AdminBookController::class, 'index']);
         Route::post('', [AdminBookController::class, 'store']);
+        Route::post('{id}/picture', [AdminBookController::class, 'upload']);
         Route::get('unConfirmed', [AdminBookController::class, 'unConfirmed']);
         Route::get('{id}', [AdminBookController::class, 'show']);
         Route::put('{id}', [AdminBookController::class, 'update']);
         Route::put('verify/{id}', [AdminBookController::class, 'verifyBook']);
-        Route::delete('{id}', [AdminBookController::class, 'destroy']);
-    });
-});
-Route::group([
-    'prefix' => 'admin'
-], function ($router) {
-    Route::group([
-        'prefix' => 'book'
-    ], function ($router) {
-        Route::get('', [AdminBookController::class, 'index']);
-        Route::post('', [AdminBookController::class, 'store']);
-        Route::get('{id}', [AdminBookController::class, 'show']);
-        Route::put('{id}', [AdminBookController::class, 'update']);
         Route::delete('{id}', [AdminBookController::class, 'destroy']);
     });
 });
