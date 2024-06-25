@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use PgSql\Lob;
 
 class BookController extends Controller implements HasMiddleware
@@ -178,8 +179,69 @@ class BookController extends Controller implements HasMiddleware
             return $this->success($book);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Book not created');
-        }
+        }        return $this->error('Book not created');
+    }
+
+    /**
+ * @OA\Post(
+ *     path="/admin/book/{id}/picture",
+ *     tags={"Admin Book"},
+ *     summary="MakeOneItem",
+ *     description="make one Item",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer"
+ *         )
+ *     ),
+ *     @OA\RequestBody(
+ *         description="tasks input",
+ *         required=true,
+ *         @OA\MediaType(
+ *             mediaType="multipart/form-data",
+ *             @OA\Schema(
+ *                 @OA\Property(
+ *                     property="picture",
+ *                     description="Item",
+ *                     type="file",
+ *                     format="file"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Success Message",
+ *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="an 'unexpected' error",
+ *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+ *     ),
+ *     security={{"api_key": {}}}
+ * )
+ * upload image book
+ */
+    public function upload(Request $request, int $id)
+    {
+        $request->validate([
+            'picture' => 'required|file|image',
+        ]);
+
+        try {
+            $book = Book::findOrFail($id);
+            $image = $request->picture;
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->storeAs('public/books', $imageName);
+            $book->picture = $imageName;
+            $book->save();
+            return $this->success(['image uploaded successfully']);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+        }        return $this->error('Book not created');
     }
 
     /**
