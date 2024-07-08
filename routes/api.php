@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminCommentController;
 use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\ExampleController;
 use App\Http\Controllers\QuotesController;
@@ -33,6 +35,15 @@ Route::group([
         Route::put('{id}', [AdminBookController::class, 'update']);
         Route::put('verify/{id}', [AdminBookController::class, 'verifyBook']);
         Route::delete('{id}', [AdminBookController::class, 'destroy']);
+    });
+    Route::group([
+        'prefix' => 'comment'
+    ], function ($router) {
+        Route::get('', [AdminCommentController::class, 'index']);
+        Route::post('', [AdminCommentController::class, 'store']);
+        Route::get('{id}', [AdminCommentController::class, 'show']);
+        Route::put('{id}', [AdminCommentController::class, 'update']);
+        Route::delete('{id}', [AdminCommentController::class, 'destroy']);
     });
 });
 Route::group([
@@ -84,3 +95,13 @@ Route::get('test1', [ExampleController::class, 'test1']);
 Route::post('contact-us', [ContactUsController::class, 'contact']);
 
 //Route::post('change-password',[AuthController::class,'changePassword']);
+
+Route::group([
+    'prefix' => 'comment'
+], function ($router) {
+    Route::get('', [CommentController::class, 'index']);
+    Route::post('', [CommentController::class, 'store']);
+    Route::get('top', [CommentController::class, 'show']);
+    Route::put('{id}', [CommentController::class, 'update']);
+    Route::delete('{id}', [CommentController::class, 'destroy']);
+});
