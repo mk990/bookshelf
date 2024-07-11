@@ -75,6 +75,36 @@
                     usePkceWithAuthorizationCodeGrant: "{!! (bool) config('l5-swagger.defaults.ui.authorization.oauth2.use_pkce_with_authorization_code_grant') !!}"
                 })
             @endif
+
+            // auto add Token
+            function addToken() {
+                const API_KEY = 'ApiKey';
+                setTimeout(function () {
+
+                    // store the api key in the local storage
+                    var originalAuthorize = ui.authActions.authorize;
+
+                    ui.authActions.authorize = function (payload) {
+                        window.localStorage.setItem(API_KEY, payload.api_key.value);
+                        return originalAuthorize(payload);
+                    };
+
+                    // if logout is clicked delete the api key in the local storage
+                    var originalLogout = ui.authActions.logout;
+
+                    ui.authActions.logout = function (payload) {
+                        window.localStorage.removeItem(API_KEY);
+                        return originalLogout(payload);
+                    };
+
+                    // If token already exists, load it from local storage
+                    const apiKey = window.localStorage.getItem(API_KEY);
+                    if (apiKey) {
+                        window.ui.preauthorizeApiKey('api_key', apiKey);
+                    }
+                }, 2000);
+            };
+            addToken();
         }
     </script>
 </body>
