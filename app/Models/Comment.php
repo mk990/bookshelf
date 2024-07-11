@@ -4,17 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @OA\Schema(
- *     schema="BookModel",
- *     title="Book Model",
- *     description="Represents a book",
+ *     schema="CommentModel",
+ *     title="comments Model",
+ *     description="Represents a comment",
  *     @OA\Property(
  *         property="id",
  *         type="integer",
  *         format="int32",
- *         description="Book ID"
+ *         description="comment ID"
  *     ),
  *     @OA\Property(
  *         property="user_id",
@@ -23,26 +24,26 @@ use Illuminate\Database\Eloquent\Model;
  *         description="User ID"
  *     ),
  *     @OA\Property(
- *         property="category_id",
+ *         property="book_id",
  *         type="integer",
  *         format="int32",
- *         description="Category ID"
+ *         description="book id"
  *     ),
  *     @OA\Property(
- *         property="title",
+ *         property="text",
  *         type="string",
- *         description="Book title"
+ *         description="comment text"
  *     ),
  *     @OA\Property(
- *         property="author",
- *         type="string",
- *         description="Book author"
+ *         property="verify",
+ *         type="boolean",
+ *         description="comment status"
  *     ),
  *     @OA\Property(
- *         property="price",
+ *         property="stars",
  *         type="integer",
  *         format="int32",
- *         description="Book price"
+ *         description="comment stars"
  *     ),
  *     @OA\Property(
  *         property="created_at",
@@ -58,24 +59,19 @@ use Illuminate\Database\Eloquent\Model;
  *     )
  * )
  */
-class Book extends Model
+class Comment extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'category_id', 'title', 'author', 'price', ''];
-    protected $hidden = ['verified'];
+    protected $fillable = [
+        'user_id',
+        'book_id',
+        'text',
+        'verified',
+        'stars'
+    ];
 
-    public function user()
+    public function book()
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
-
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
+        return $this->belongsTo(Book::class);
     }
 }
