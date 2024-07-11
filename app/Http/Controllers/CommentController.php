@@ -198,7 +198,7 @@ class CommentController extends Controller implements HasMiddleware
     * )
     * Display the specified resource.
     */
-    public function show()
+    public function topComments()
     {
         try {
             $comment = Comment::whereStars(5)->whereVerified(1)->get();

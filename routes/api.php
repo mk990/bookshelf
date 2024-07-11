@@ -101,7 +101,7 @@ Route::group([
 ], function ($router) {
     Route::get('', [CommentController::class, 'index']);
     Route::post('', [CommentController::class, 'store']);
-    Route::get('top', [CommentController::class, 'show']);
+    Route::get('top', [CommentController::class, 'topComments']);
     Route::put('{id}', [CommentController::class, 'update']);
     Route::delete('{id}', [CommentController::class, 'destroy']);
 });
