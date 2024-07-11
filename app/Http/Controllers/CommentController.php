@@ -14,7 +14,7 @@ class CommentController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth', except: ['index', 'show']),
+            new Middleware('auth', except: ['index', 'topComments']),
         ];
     }
 
@@ -175,7 +175,7 @@ class CommentController extends Controller implements HasMiddleware
             return $this->success($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Book not created');
+            return $this->error('Comment not created');
         }
     }
 
@@ -201,11 +201,11 @@ class CommentController extends Controller implements HasMiddleware
     public function topComments()
     {
         try {
-            $comment = Comment::whereStars(5)->whereVerified(1)->get();
+            $comment = Comment::latest()->whereVerified(1)->limit(3)->get();
             return $this->success($comment);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Book not found');
+            return $this->error('comments not found');
         }
     }
 
@@ -280,7 +280,7 @@ class CommentController extends Controller implements HasMiddleware
             return response()->json($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not created'], 400);
+            return response()->json(['error' => 'Comment not created'], 400);
         }
     }
 
@@ -324,7 +324,7 @@ class CommentController extends Controller implements HasMiddleware
             return response()->json("comment $id deleted");
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not deleted'], 400);
+            return response()->json(['error' => 'Comment not deleted'], 400);
         }
     }
 }
