@@ -114,11 +114,13 @@ class TicketController extends Controller
      */
     public function index()
     {
-        $ticket = Ticket::latest()->with('message')->paginate(20);
-        if ($ticket->user_id !== auth()->id()) {
-            return $this->error('forbidden', status: 403);
+        $tickets = Ticket::latest()->with('message')->paginate(20);
+        foreach ($tickets as $ticket) {
+            if ($ticket->user_id !== auth()->id()) {
+                return $this->error('forbidden', status: 403);
+            }
         }
-        return $this->success($ticket);
+        return $this->success($tickets);
     }
 
     /**
