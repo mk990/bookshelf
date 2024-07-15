@@ -14,6 +14,7 @@ return new class () extends Migration {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('ticket_id')->references('id')->on('tickets')->onDelete('cascade')->onUpdate('cascade');
+            $table->string('title');
             $table->text('message');
             $table->timestamps();
         });

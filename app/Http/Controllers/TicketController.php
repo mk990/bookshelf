@@ -114,7 +114,7 @@ class TicketController extends Controller
      */
     public function index()
     {
-        return $this->success(Ticket::latest()->whereIsVerified(1)->paginate(20));
+        return $this->success(Ticket::latest()->with('message')->paginate(20));
     }
 
     /**
@@ -134,17 +134,10 @@ class TicketController extends Controller
      *                 example="message"
      *             ),
      *             @OA\Property(
-     *                 property="open",
-     *                 type="boolean",
-     *                 description="open is ticket or not",
-     *                 example="true or false"
-     *             ),
-     *             @OA\Property(
-     *                 property="user_id",
-     *                 type="integer",
-     *                 description="The ID of the user who issued the ticket",
-     *                 default="null",
-     *                 example="0",
+     *                 property="title",
+     *                 type="string",
+     *                 description="your title ticket",
+     *                 example="title ticket"
      *             ),
      *             @OA\Property(
      *                 property="book_id",
@@ -172,16 +165,20 @@ class TicketController extends Controller
     {
         $request->validate([
             'book_id'  => 'required|numeric',
+            'title'    => 'required|string',
             'message'  => 'required|string'
         ]);
         try {
             $ticket = Ticket::create($request->all());
             $message = Message::create([
-                'user_id'   => auth()->id(),
+                'user_id'   => $request->user_id,
                 'ticket_id' => $ticket->id,
-                'message'   => $request['message'],
+                'title'     => $request->message,
+                'message'   => $request->title,
             ]);
-            return $this->success($ticket);
+
+            $result = $ticket->message;
+            return $this->success($result);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Ticket not created');
@@ -219,57 +216,14 @@ class TicketController extends Controller
     {
         try {
             $ticket = Ticket::findOrFail($id);
-            if ($ticket->user_id !== auth()->id() && $ticket->verified == 0) {
+            if ($ticket->user_id !== auth()->id()) {
                 return $this->error('forbidden', status: 403);
             }
-            return $this->success($ticket);
+            $result = $ticket->message;
+            return $this->success($result);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Ticket not found');
-        }
-    }
-
-    /**
-     * @OA\Delete(
-     *     path="/ticket/{id}",
-     *     tags={"Ticket"},
-     *     summary="DeleteOneItem",
-     *     description="Delete one Item",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="an 'unexpected' error",
-     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-     *     ),security={{"api_key": {}}}
-     * )
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Int $id)
-    {
-        try {
-            $ticket = Ticket::findOrFail($id);
-            if ($ticket->user_id !== auth()->id() || $ticket->verified == 1) {
-                return $this->error('forbidden', status: 403);
-            }
-
-            $ticket->delete();
-            $id = $ticket->id;
-            return response()->json("book $id deleted");
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['error' => 'Ticket not deleted'], 400);
         }
     }
 }

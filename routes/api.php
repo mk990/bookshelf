@@ -112,6 +112,5 @@ Route::group([
 ], function ($router) {
     Route::get('', [TicketController::class, 'index']);
     Route::post('', [TicketController::class, 'store']);
-    Route::get('', [TicketController::class, 'show']);
-    Route::delete('{id}', [TicketController::class, 'destroy']);
+    Route::get('{id}', [TicketController::class, 'show']);
 });
