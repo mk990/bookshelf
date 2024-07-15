@@ -9,8 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use PgSql\Lob;
 
 class BookController extends Controller implements HasMiddleware
 {

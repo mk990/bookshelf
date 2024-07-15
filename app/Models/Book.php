@@ -78,4 +78,9 @@ class Book extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

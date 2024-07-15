@@ -8,3 +8,4 @@
 - [x] add contact us and about us
 - [ ] add admin panel
 - [x] user_id middleware
+- [ ] add ticketing user and admin

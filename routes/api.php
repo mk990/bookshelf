@@ -10,6 +10,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\ExampleController;
 use App\Http\Controllers\QuotesController;
+use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -104,4 +105,13 @@ Route::group([
     Route::get('top', [CommentController::class, 'topComments']);
     Route::put('{id}', [CommentController::class, 'update']);
     Route::delete('{id}', [CommentController::class, 'destroy']);
+});
+
+Route::group([
+    'prefix' => 'ticket'
+], function ($router) {
+    Route::get('', [TicketController::class, 'index']);
+    Route::post('', [TicketController::class, 'store']);
+    Route::get('', [TicketController::class, 'show']);
+    Route::delete('{id}', [TicketController::class, 'destroy']);
 });
