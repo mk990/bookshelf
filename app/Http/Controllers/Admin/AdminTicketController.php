@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\Message;
+use App\Http\Controllers\Controller;
 use App\Models\Ticket;
 use Exception;
 use Illuminate\Http\Request;
@@ -10,19 +10,19 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Log;
 
-class TicketController extends Controller implements HasMiddleware
+class AdminTicketController extends Controller implements HasMiddleware
 {
     public static function middleware(): array
     {
         return [
-            new Middleware('auth'),
+            new Middleware('auth.admin'),
         ];
     }
 
     /**
      * @OA\Get(
-     *     path="/ticket",
-     *     tags={"Ticket"},
+     *     path="/admin/ticket",
+     *     tags={"AdminTicket"},
      *     summary="listAllItem",
      *     description="list all Item",
      *     @OA\Parameter(
@@ -115,77 +115,13 @@ class TicketController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $tickets = Ticket::latest()->paginate(20);
-        foreach ($tickets as $ticket) {
-            if ($ticket->user_id !== auth()->id()) {
-                return $this->error('forbidden', status: 403);
-            }
-        }
-        return $this->success($tickets);
-    }
-
-    /**
-     * @OA\Post(
-     *     path="/ticket",
-     *     tags={"Ticket"},
-     *     summary="MakeOneItem",
-     *     description="make one Item",
-     *     @OA\RequestBody(
-     *         description="tasks input",
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 description="your message",
-     *                 example="message"
-     *             ),
-     *             @OA\Property(
-     *                 property="title",
-     *                 type="string",
-     *                 description="your title ticket",
-     *                 example="title ticket"
-     *             ),
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="an 'unexpected' error",
-     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-     *     ),security={{"api_key": {}}}
-     * )
-     * Make a ticket
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'title'    => 'required|string',
-            'message'  => 'required|string'
-        ]);
-        try {
-            $ticket = Ticket::create($request->all());
-            $message = Message::create([
-                'user_id'     => $request->user_id,
-                'ticket_id'   => $ticket->id,
-                'message'     => $request->message,
-            ]);
-
-            return $this->success($ticket);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return $this->error('Ticket not created');
-        }
+        return $this->success(Ticket::latest()->paginate(20));
     }
 
     /**
      * @OA\Get(
-     *     path="/ticket/{id}",
-     *     tags={"Ticket"},
+     *     path="/admin/ticket/{id}",
+     *     tags={"AdminTicket"},
      *     summary="getOneItem",
      *     description="get One Item",
      *     @OA\Parameter(
@@ -214,9 +150,6 @@ class TicketController extends Controller implements HasMiddleware
         try {
             $ticket = Ticket::findOrFail($id);
             $ticket->message;
-            if ($ticket->user_id !== auth()->id()) {
-                return $this->error('forbidden', status: 403);
-            }
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -226,8 +159,8 @@ class TicketController extends Controller implements HasMiddleware
 
     /**
      * @OA\Get(
-     *     path="/ticket/open",
-     *     tags={"Ticket"},
+     *     path="/admin/ticket/open",
+     *     tags={"AdminTicket"},
      *     summary="getOpenItem",
      *     description="get Open Item",
      *     @OA\Response(
@@ -247,11 +180,6 @@ class TicketController extends Controller implements HasMiddleware
     {
         try {
             $ticket = Ticket::whereOpen(true)->latest()->paginate(20);
-            foreach ($ticket as $item) {
-                if ($item->user_id !== auth()->id()) {
-                    return $this->error('forbidden', status: 403);
-                }
-            }
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -261,8 +189,8 @@ class TicketController extends Controller implements HasMiddleware
 
     /**
      * @OA\Get(
-     *     path="/ticket/close",
-     *     tags={"Ticket"},
+     *     path="/admin/ticket/close",
+     *     tags={"AdminTicket"},
      *     summary="getCloseItem",
      *     description="get Close Item",
      *     @OA\Response(
@@ -282,11 +210,6 @@ class TicketController extends Controller implements HasMiddleware
     {
         try {
             $ticket = Ticket::whereOpen(false)->latest()->paginate(20);
-            foreach ($ticket as $item) {
-                if ($item->user_id !== auth()->id()) {
-                    return $this->error('forbidden', status: 403);
-                }
-            }
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminCommentController;
+use App\Http\Controllers\Admin\AdminTicketController;
 use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
@@ -46,7 +47,17 @@ Route::group([
         Route::put('{id}', [AdminCommentController::class, 'update']);
         Route::delete('{id}', [AdminCommentController::class, 'destroy']);
     });
+    Route::group([
+        'prefix' => 'ticket'
+    ], function ($router) {
+        Route::get('', [AdminTicketController::class, 'index']);
+        Route::get('open', [AdminTicketController::class, 'open']);
+        Route::get('close', [AdminTicketController::class, 'closedTicket']);
+        Route::post('', [AdminTicketController::class, 'store']);
+        Route::get('{id}', [AdminTicketController::class, 'show']);
+    });
 });
+
 Route::group([
     'prefix' => 'auth'
 ], function ($router) {
@@ -112,6 +123,7 @@ Route::group([
 ], function ($router) {
     Route::get('', [TicketController::class, 'index']);
     Route::get('open', [TicketController::class, 'open']);
+    Route::get('close', [TicketController::class, 'closedTicket']);
     Route::post('', [TicketController::class, 'store']);
     Route::get('{id}', [TicketController::class, 'show']);
 });
