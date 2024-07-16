@@ -14,7 +14,12 @@ use Illuminate\Database\Eloquent\Model;
  *         property="id",
  *         type="integer",
  *         format="int32",
- *         description="Book ID"
+ *         description="ticket ID"
+ *     ),
+ *     @OA\Property(
+ *         property="title",
+ *         type="string",
+ *         description="title your ticket"
  *     ),
  *     @OA\Property(
  *         property="open",
@@ -26,12 +31,6 @@ use Illuminate\Database\Eloquent\Model;
  *         type="integer",
  *         format="int32",
  *         description="user id for ticket"
- *     ),
- *     @OA\Property(
- *         property="book_id",
- *         type="integer",
- *         format="int32",
- *         description="Book id for ticket"
  *     ),
  *     @OA\Property(
  *         property="created_at",
@@ -51,7 +50,7 @@ class Ticket extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'open', 'user_id', 'book_id'
+        'open', 'user_id', 'title'
     ];
 
     public function user()
@@ -59,13 +58,8 @@ class Ticket extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function book()
-    {
-        return $this->belongsTo(Book::class);
-    }
-
     public function message()
     {
-        return $this->hasOne(Message::class);
+        return $this->hasMany(Message::class);
     }
 }

@@ -111,6 +111,7 @@ Route::group([
     'prefix' => 'ticket'
 ], function ($router) {
     Route::get('', [TicketController::class, 'index']);
+    Route::get('open', [TicketController::class, 'open']);
     Route::post('', [TicketController::class, 'store']);
     Route::get('{id}', [TicketController::class, 'show']);
 });

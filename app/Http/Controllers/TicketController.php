@@ -114,7 +114,7 @@ class TicketController extends Controller
      */
     public function index()
     {
-        $tickets = Ticket::latest()->with('message')->paginate(20);
+        $tickets = Ticket::latest()->paginate(20);
         foreach ($tickets as $ticket) {
             if ($ticket->user_id !== auth()->id()) {
                 return $this->error('forbidden', status: 403);
@@ -145,13 +145,6 @@ class TicketController extends Controller
      *                 description="your title ticket",
      *                 example="title ticket"
      *             ),
-     *             @OA\Property(
-     *                 property="book_id",
-     *                 type="integer",
-     *                 description="The ID of the book that the user has given a ticket for",
-     *                 default="null",
-     *                 example=0,
-     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -170,21 +163,18 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'book_id'  => 'required|numeric',
             'title'    => 'required|string',
             'message'  => 'required|string'
         ]);
         try {
             $ticket = Ticket::create($request->all());
             $message = Message::create([
-                'user_id'   => $request->user_id,
-                'ticket_id' => $ticket->id,
-                'title'     => $request->message,
-                'message'   => $request->title,
+                'user_id'     => $request->user_id,
+                'ticket_id'   => $ticket->id,
+                'message'     => $request->message,
             ]);
 
-            $result = $ticket->message;
-            return $this->success($result);
+            return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Ticket not created');
@@ -208,7 +198,7 @@ class TicketController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/BookModel"),
+     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
      *     ),
      *     @OA\Response(
      *         response=400,
@@ -222,11 +212,46 @@ class TicketController extends Controller
     {
         try {
             $ticket = Ticket::findOrFail($id);
+            $ticket->message;
             if ($ticket->user_id !== auth()->id()) {
                 return $this->error('forbidden', status: 403);
             }
-            $result = $ticket->message;
-            return $this->success($result);
+            return $this->success($ticket);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('Ticket not found');
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/ticket/open",
+     *     tags={"Ticket"},
+     *     summary="getOpenItem",
+     *     description="get Open Item",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success Message",
+     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="an ""unexpected"" error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),security={{"api_key": {}}}
+     * )
+     * Display the specified resource.
+     */
+    public function open()
+    {
+        try {
+            $ticket = Ticket::whereOpen(true)->latest()->paginate(20);
+            foreach ($ticket as $item) {
+                if ($item->user_id !== auth()->id()) {
+                    return $this->error('forbidden', status: 403);
+                }
+            }
+            return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Ticket not found');
