@@ -34,6 +34,11 @@ use Illuminate\Database\Eloquent\Model;
  *         description="your message"
  *     ),
  *     @OA\Property(
+ *         property="view",
+ *         type="string",
+ *         description="id admin watch your ticket"
+ *     ),
+ *     @OA\Property(
  *         property="created_at",
  *         type="string",
  *         format="date-time",
@@ -50,7 +55,7 @@ use Illuminate\Database\Eloquent\Model;
 class Message extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'ticket_id', 'message'];
+    protected $fillable = ['user_id', 'ticket_id', 'message', 'view'];
 
     public function user()
     {

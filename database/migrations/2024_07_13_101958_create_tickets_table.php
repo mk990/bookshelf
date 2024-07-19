@@ -16,6 +16,8 @@ return new class () extends Migration {
             $table->string('title');
             $table->foreignIdFor(User::class)->onDelete('cascade');
             $table->boolean('open')->default(true);
+            $table->Integer('stars')->default(0);
+            $table->timestamp('last_message')->nullable();
             $table->timestamps();
         });
     }

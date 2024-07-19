@@ -33,6 +33,18 @@ use Illuminate\Database\Eloquent\Model;
  *         description="user id for ticket"
  *     ),
  *     @OA\Property(
+ *         property="stars",
+ *         type="integer",
+ *         format="int32",
+ *         description="your rate in ticket"
+ *     ),
+ *     @OA\Property(
+ *         property="last_message",
+ *         type="string",
+ *         format="date-time",
+ *         description="last message date"
+ *     ),
+ *     @OA\Property(
  *         property="created_at",
  *         type="string",
  *         format="date-time",
@@ -50,7 +62,8 @@ class Ticket extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'open', 'user_id', 'title'
+        'open', 'user_id', 'title', 'stars',
+        'last_message'
     ];
 
     public function user()
