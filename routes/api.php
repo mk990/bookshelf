@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminCommentController;
 use App\Http\Controllers\Admin\AdminTicketController;
 use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\AdminMessageController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
@@ -54,11 +55,12 @@ Route::group([
         Route::get('', [AdminTicketController::class, 'index']);
         Route::get('open', [AdminTicketController::class, 'open']);
         Route::get('close', [AdminTicketController::class, 'closedTicket']);
-        Route::post('{id}/reply', [MessageController::class, 'store']);
+        Route::post('{id}/reply', [AdminMessageController::class, 'store']);
         Route::get('{id}', [AdminTicketController::class, 'show']);
-        Route::put('{id}', [MessageController::class, 'update']);
-        Route::delete('{id}', [MessageController::class, 'destroy']);
-        Route::get('{id}/message', [MessageController::class, 'showMessage']);
+        Route::put('{id}', [AdminMessageController::class, 'update']);
+        Route::delete('{id}/message', [AdminMessageController::class, 'destroyMessage']);
+        Route::delete('{id}', [AdminMessageController::class, 'destroy']);
+        Route::get('{id}/message', [AdminMessageController::class, 'showMessage']);
     });
 });
 
@@ -133,6 +135,7 @@ Route::group([
     Route::post('{id}/reply', [MessageController::class, 'reply']);
     Route::get('{id}', [TicketController::class, 'show']);
     Route::get('{id}/message', [TicketController::class, 'showAllMessage']);
-    Route::put('{id}', [TicketController::class, 'update']);
-    Route::delete('{id}', [TicketController::class, 'destroy']);
+    Route::put('{id}', [MessageController::class, 'update']);
+    Route::delete('{id}', [MessageController::class, 'destroy']);
+    Route::delete('{id}/message', [MessageController::class, 'destroyMessage']);
 });

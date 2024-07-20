@@ -184,79 +184,6 @@ class TicketController extends Controller implements HasMiddleware
     }
 
     /**
-     * @OA\Put(
-     *     path="/ticket/{id}",
-     *     tags={"Ticket"},
-     *     summary="EditOneItem",
-     *     description="edit one Item",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
-     *     @OA\RequestBody(
-     *         description="tasks input",
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 description="your message",
-     *                 example="message"
-     *             ),
-     *             @OA\Property(
-     *                 property="title",
-     *                 type="string",
-     *                 description="your title ticket",
-     *                 example="title ticket"
-     *             ),
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="an 'unexpected' error",
-     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-     *     ),security={{"api_key": {}}}
-     * )
-     * Make a ticket
-     */
-    public function update(Request $request, int $id)
-    {
-        $request->validate([
-            'title'    => 'required|string',
-            'message'  => 'required|string'
-        ]);
-        try {
-            $ticket = Ticket::findOrFail($id);
-            $message = Message::whereTicketId($ticket->id)->get();
-            foreach ($message as $item) {
-                if ($item->view === null) {
-                    if ($item->user_id !== auth()->id()) {
-                        return $this->error('forbidden', status:403);
-                    }
-                    $ticket->update($request->all());
-                    $message->update([
-                        'message'     => $request->message,
-                    ]);
-                    return $this->success($ticket);
-                }
-                return $this->error('Ticket not updated ( admin watch your ticket )');
-            }
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return $this->error('Ticket not updated');
-        }
-    }
-
-    /**
      * @OA\Get(
      *     path="/ticket/{id}",
      *     tags={"Ticket"},
@@ -458,59 +385,15 @@ class TicketController extends Controller implements HasMiddleware
         try {
             $ticket = Ticket::findOrFail($id);
             $message = Message::whereTicketId($ticket->id)->get();
-            return $this->success($message);
+            foreach ($message as $item) {
+                if ($item->user_id !== auth()->id()) {
+                    return $this->error('forbidden', status: 403);
+                }
+                return $this->success($message);
+            }
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Ticket not found');
-        }
-    }
-
-    /**
-     * @OA\Delete(
-     *     path="/ticket/{id}",
-     *     tags={"Ticket"},
-     *     summary="DeleteOneItem",
-     *     description="Delete one Item",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="an 'unexpected' error",
-     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-     *     ),security={{"api_key": {}}}
-     * )
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Int $id)
-    {
-        try {
-            $ticket = Ticket::findOrFail($id);
-            $message = Message::whereTicketId($ticket->id)->get();
-            $id = $ticket->id;
-            foreach ($message as $item) {
-                if ($item->view === null) {
-                    if ($ticket->user_id !== auth()->id()) {
-                        return $this->error('forbidden', status:403);
-                    }
-                    $ticket->delete();
-                    return $this->success("Ticket $id deleted");
-                }
-                return $this->error('Ticket not deleted ( admin watch your ticket )');
-            }
-        } catch(Exception $e) {
-            Log::error($e->getMessage());
-            return $this->error('Ticket not deleted', status:400);
         }
     }
 }
