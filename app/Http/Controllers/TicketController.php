@@ -1,28 +1,28 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Book;
+use App\Models\Message;
+use App\Models\Ticket;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Log;
 
-class BookController extends Controller implements HasMiddleware
+class TicketController extends Controller implements HasMiddleware
 {
     public static function middleware(): array
     {
         return [
-            new Middleware('auth.admin'),
+            new Middleware('auth'),
         ];
     }
 
     /**
      * @OA\Get(
-     *     path="/admin/book",
-     *     tags={"Admin Book"},
+     *     path="/ticket",
+     *     tags={"Ticket"},
      *     summary="listAllItem",
      *     description="list all Item",
      *     @OA\Parameter(
@@ -115,13 +115,13 @@ class BookController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        return $this->success(Book::latest()->paginate(20));
+        return $this->success(Ticket::whereUserId(auth()->id())->latest()->paginate(20));
     }
 
     /**
      * @OA\Post(
-     *     path="/admin/book",
-     *     tags={"Admin Book"},
+     *     path="/ticket",
+     *     tags={"Ticket"},
      *     summary="MakeOneItem",
      *     description="make one Item",
      *     @OA\RequestBody(
@@ -129,31 +129,23 @@ class BookController extends Controller implements HasMiddleware
      *         required=true,
      *         @OA\JsonContent(
      *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 description="your message",
+     *                 example="message"
+     *             ),
+     *             @OA\Property(
      *                 property="title",
      *                 type="string",
-     *                 description="title",
-     *                 example="Item name"
+     *                 description="your title ticket",
+     *                 example="title ticket"
      *             ),
-     *             @OA\Property(
-     *                 property="author",
-     *                 type="string",
-     *                 description="author",
-     *                 default="null",
-     *                 example="writer Item",
-     *             ),
-     *             @OA\Property(
-     *                 property="price",
-     *                 type="integer",
-     *                 description="price",
-     *                 default="null",
-     *                 example=0,
-     *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/BookModel"),
+     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
      *     ),
      *     @OA\Response(
      *         response=400,
@@ -161,91 +153,34 @@ class BookController extends Controller implements HasMiddleware
      *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
      *     ),security={{"api_key": {}}}
      * )
-     * Make a book
+     * Make a ticket
      */
     public function store(Request $request)
     {
         $request->validate([
-            'title'   => 'required',
-            'author'  => 'required',
-            'price'   => 'required|numeric',
-            // 'picture' => 'required|string',
+            'title'    => 'required|string',
+            'message'  => 'required|string'
         ]);
-
         try {
-            $book = Book::create($request->all());
-            return $this->success($book);
+            $ticket = Ticket::create($request->all());
+            $message = Message::create([
+                'user_id'     => $request->user_id,
+                'ticket_id'   => $ticket->id,
+                'message'     => $request->message,
+            ]);
+            $ticket->last_message = $message->created_at;
+            $ticket->save();
+            return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-        }        return $this->error('Book not created');
-    }
-
-    /**
- * @OA\Post(
- *     path="/admin/book/{id}/picture",
- *     tags={"Admin Book"},
- *     summary="MakeOneItem",
- *     description="make one Item",
- *     @OA\Parameter(
- *         name="id",
- *         in="path",
- *         required=true,
- *         @OA\Schema(
- *             type="integer"
- *         )
- *     ),
- *     @OA\RequestBody(
- *         description="tasks input",
- *         required=true,
- *         @OA\MediaType(
- *             mediaType="multipart/form-data",
- *             @OA\Schema(
- *                 @OA\Property(
- *                     property="picture",
- *                     description="Item",
- *                     type="file",
- *                     format="file"
- *                 )
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Success Message",
- *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
- *     ),
- *     @OA\Response(
- *         response=400,
- *         description="an 'unexpected' error",
- *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
- *     ),
- *     security={{"api_key": {}}}
- * )
- * upload image book
- */
-    public function upload(Request $request, int $id)
-    {
-        $request->validate([
-            'picture' => 'required|file|image',
-        ]);
-
-        try {
-            $book = Book::findOrFail($id);
-            $image = $request->picture;
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/books', $imageName);
-            $book->picture = $imageName;
-            $book->save();
-            return $this->success(['image uploaded successfully']);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-        }        return $this->error('Book not created');
+            return $this->error('Ticket not created');
+        }
     }
 
     /**
      * @OA\Get(
-     *     path="/admin/book/{id}",
-     *     tags={"Admin Book"},
+     *     path="/ticket/{id}",
+     *     tags={"Ticket"},
      *     summary="getOneItem",
      *     description="get One Item",
      *     @OA\Parameter(
@@ -259,7 +194,7 @@ class BookController extends Controller implements HasMiddleware
      *     @OA\Response(
      *         response=200,
      *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/BookModel"),
+     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
      *     ),
      *     @OA\Response(
      *         response=400,
@@ -272,136 +207,27 @@ class BookController extends Controller implements HasMiddleware
     public function show(Int $id)
     {
         try {
-            $book = Book::findOrFail($id);
-            return response()->json($book);
+            $ticket = Ticket::findOrFail($id);
+            if ($ticket->user_id !== auth()->id()) {
+                return $this->error('forbidden', status: 403);
+            }
+            return $this->success($ticket->with("message"));
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not found'], 400);
-        }
-    }
-
-    /**
-     * @OA\Put(
-     *     path="/admin/book/{id}",
-     *     tags={"Admin Book"},
-     *     summary="EditOneItem",
-     *     description="edit one Item",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
-     *     @OA\RequestBody(
-     *         description="tasks input",
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="title",
-     *                 type="string",
-     *                 description="title",
-     *                 example="Item name"
-     *             ),
-     *             @OA\Property(
-     *                 property="author",
-     *                 type="string",
-     *                 description="author",
-     *                 default="null",
-     *                 example="writer Item",
-     *             ),
-     *             @OA\Property(
-     *                 property="price",
-     *                 type="integer",
-     *                 description="price",
-     *                 default="null",
-     *                 example="price Item",
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/BookModel"),
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="an 'unexpected' error",
-     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-     *     ),security={{"api_key": {}}}
-     * )
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Int $id)
-    {
-        $request->validate([
-            'title'   => 'required',
-            'author'  => 'required',
-            'price'   => 'required|numeric',
-            //'picture' => 'required|url',
-        ]);
-
-        try {
-            $book = Book::findOrFail($id);
-            $book->update($request->all());
-            return response()->json($book);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not created'], 400);
-        }
-    }
-
-    /**
-     * @OA\Delete(
-     *     path="/admin/book/{id}",
-     *     tags={"Admin Book"},
-     *     summary="DeleteOneItem",
-     *     description="Delete one Item",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="an 'unexpected' error",
-     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-     *     ),security={{"api_key": {}}}
-     * )
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Int $id)
-    {
-        try {
-            $book = Book::findOrFail($id);
-            $book->delete();
-            $id = $book->id;
-            return response()->json("book $id deleted");
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not deleted'], 400);
+            return $this->error('Ticket not found');
         }
     }
 
     /**
      * @OA\Get(
-     *     path="/admin/book/unConfirmed",
-     *     tags={"Admin Book"},
-     *     summary="getUnConfirmedItem",
-     *     description="get un confirmed Item",
+     *     path="/ticket/open",
+     *     tags={"Ticket"},
+     *     summary="getOpenItem",
+     *     description="get Open Item",
      *     @OA\Response(
      *         response=200,
      *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/BookModel"),
+     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
      *     ),
      *     @OA\Response(
      *         response=400,
@@ -411,17 +237,53 @@ class BookController extends Controller implements HasMiddleware
      * )
      * Display the specified resource.
      */
-    public function unConfirmed()
+    public function open()
     {
-        return $this->success(Book::whereVerified(0)->get());
+        try {
+            $ticket = Ticket::whereOpen(true)->whereUserId(auth()->id())->latest()->paginate(20);
+            return $this->success($ticket);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('Ticket not found');
+        }
     }
 
     /**
-     * @OA\Put(
-     *     path="/admin/book/verify/{id}",
-     *     tags={"Admin Book"},
-     *     summary="VerifyOneItem",
-     *     description="Verify one Item",
+     * @OA\Get(
+     *     path="/ticket/close",
+     *     tags={"Ticket"},
+     *     summary="getCloseItem",
+     *     description="get Close Item",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success Message",
+     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="an ""unexpected"" error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),security={{"api_key": {}}}
+     * )
+     * Display the specified resource.
+     */
+    public function closedTicket()
+    {
+        try {
+            $ticket = Ticket::whereOpen(false)->whereUserId(auth()->id())->latest()->paginate(20);
+            return $this->success($ticket);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('Ticket not found');
+        }
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/ticket/{id}/close",
+     *     tags={"Ticket"},
+     *     summary="closeOneItem",
+     *     description="close one Item",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -433,7 +295,7 @@ class BookController extends Controller implements HasMiddleware
      *     @OA\Response(
      *         response=200,
      *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
+     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
      *     ),
      *     @OA\Response(
      *         response=400,
@@ -441,18 +303,63 @@ class BookController extends Controller implements HasMiddleware
      *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
      *     ),security={{"api_key": {}}}
      * )
-     * Remove the specified resource from storage.
+     * Make a ticket
      */
-    public function verifyBook(int $id)
+    public function closeTicket(Request $request, int $id)
     {
         try {
-            $book = Book::findOrFail($id);
-            $book->verified = true;
-            $book->save();
-            return response()->json(["book $id verified"]);
+            $ticket = Ticket::findOrFail($id);
+            if ($ticket->user_id !== auth()->id()) {
+                return $this->error('forbidden', status: 403);
+            }
+            $ticket->open = false;
+            $ticket->save();
+            return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not verified'], 400);
+            return $this->error('Ticket not updated');
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/ticket/{id}/messages",
+     *     tags={"Ticket"},
+     *     summary="getAllMessageItem",
+     *     description="get All Message Item",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success Message",
+     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="an ""unexpected"" error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),security={{"api_key": {}}}
+     * )
+     * Display the specified resource.
+     */
+    public function messages(int $id)
+    {
+        try {
+            $ticket = Ticket::findOrFail($id);
+            if ($ticket->user_id != auth()->id()){
+                return $this->error('forbidden', status: 403);
+            }
+            $message = Message::whereTicketId($ticket->id)->get();
+            return $this->success($message);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('Ticket not found');
         }
     }
 }
