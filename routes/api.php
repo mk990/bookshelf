@@ -49,6 +49,7 @@ Route::group([
         Route::put('{id}', [AdminCommentController::class, 'update']);
         Route::delete('{id}', [AdminCommentController::class, 'destroy']);
     });
+    // FIXME: add message route
     Route::group([
         'prefix' => 'ticket'
     ], function ($router) {
@@ -124,6 +125,7 @@ Route::group([
     Route::delete('{id}', [CommentController::class, 'destroy']);
 });
 
+// FIXME: add message route
 Route::group([
     'prefix' => 'ticket'
 ], function ($router) {

@@ -14,7 +14,7 @@ return new class () extends Migration {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->foreignIdFor(User::class)->onDelete('cascade');
+            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->boolean('open')->default(true);
             $table->Integer('stars')->default(0);
             $table->timestamp('last_message')->nullable();

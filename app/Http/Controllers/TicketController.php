@@ -115,13 +115,7 @@ class TicketController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $tickets = Ticket::latest()->paginate(20);
-        foreach ($tickets as $ticket) {
-            if ($ticket->user_id !== auth()->id()) {
-                return $this->error('forbidden', status: 403);
-            }
-        }
-        return $this->success($tickets);
+        return $this->success(Ticket::whereUserId(auth()->id())->latest()->paginate(20));
     }
 
     /**
@@ -214,11 +208,10 @@ class TicketController extends Controller implements HasMiddleware
     {
         try {
             $ticket = Ticket::findOrFail($id);
-            $ticket->message;
             if ($ticket->user_id !== auth()->id()) {
                 return $this->error('forbidden', status: 403);
             }
-            return $this->success($ticket);
+            return $this->success($ticket->with("message"));
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Ticket not found');
@@ -247,12 +240,7 @@ class TicketController extends Controller implements HasMiddleware
     public function open()
     {
         try {
-            $ticket = Ticket::whereOpen(true)->latest()->paginate(20);
-            foreach ($ticket as $item) {
-                if ($item->user_id !== auth()->id()) {
-                    return $this->error('forbidden', status: 403);
-                }
-            }
+            $ticket = Ticket::whereOpen(true)->whereUserId(auth()->id())->latest()->paginate(20);
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -282,12 +270,7 @@ class TicketController extends Controller implements HasMiddleware
     public function closedTicket()
     {
         try {
-            $ticket = Ticket::whereOpen(false)->latest()->paginate(20);
-            foreach ($ticket as $item) {
-                if ($item->user_id !== auth()->id()) {
-                    return $this->error('forbidden', status: 403);
-                }
-            }
+            $ticket = Ticket::whereOpen(false)->whereUserId(auth()->id())->latest()->paginate(20);
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
@@ -309,18 +292,6 @@ class TicketController extends Controller implements HasMiddleware
      *             type="integer"
      *         )
      *     ),
-     *     @OA\RequestBody(
-     *         description="tasks input",
-     *         required=true,
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="open",
-     *                 type="boolean",
-     *                 description="your message",
-     *                 example=false
-     *             ),
-     *         )
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Success Message",
@@ -336,15 +307,12 @@ class TicketController extends Controller implements HasMiddleware
      */
     public function closeTicket(Request $request, int $id)
     {
-        $request->validate([
-            'open'    => 'required|boolean',
-        ]);
         try {
             $ticket = Ticket::findOrFail($id);
             if ($ticket->user_id !== auth()->id()) {
                 return $this->error('forbidden', status: 403);
             }
-            $ticket->open = $request->open;
+            $ticket->open = false;
             $ticket->save();
             return $this->success($ticket);
         } catch (Exception $e) {
@@ -355,7 +323,7 @@ class TicketController extends Controller implements HasMiddleware
 
     /**
      * @OA\Get(
-     *     path="/ticket/{id}/message",
+     *     path="/ticket/{id}/messages",
      *     tags={"Ticket"},
      *     summary="getAllMessageItem",
      *     description="get All Message Item",
@@ -380,17 +348,15 @@ class TicketController extends Controller implements HasMiddleware
      * )
      * Display the specified resource.
      */
-    public function showAllMessage(int $id)
+    public function messages(int $id)
     {
         try {
             $ticket = Ticket::findOrFail($id);
-            $message = Message::whereTicketId($ticket->id)->get();
-            foreach ($message as $item) {
-                if ($item->user_id !== auth()->id()) {
-                    return $this->error('forbidden', status: 403);
-                }
-                return $this->success($message);
+            if ($ticket->user_id != auth()->id()){
+                return $this->error('forbidden', status: 403);
             }
+            $message = Message::whereTicketId($ticket->id)->get();
+            return $this->success($message);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Ticket not found');

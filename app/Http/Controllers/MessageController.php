@@ -19,6 +19,7 @@ class MessageController extends Controller implements HasMiddleware
         ];
     }
 
+    // FIXME: add post /message
     /**
      * @OA\Post(
      *     path="/ticket/{id}/reply",
@@ -82,6 +83,7 @@ class MessageController extends Controller implements HasMiddleware
         }
     }
 
+    // FIXME:
     /**
      * @OA\Put(
      *     path="/ticket/{id}",
@@ -155,6 +157,7 @@ class MessageController extends Controller implements HasMiddleware
         }
     }
 
+    // FIXME:
     /**
      * @OA\Delete(
      *     path="/ticket/{id}",
@@ -204,6 +207,7 @@ class MessageController extends Controller implements HasMiddleware
         }
     }
 
+    // FIXME:
     /**
      * @OA\Delete(
      *     path="/ticket/{id}/message",
