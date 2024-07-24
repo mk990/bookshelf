@@ -224,49 +224,10 @@ class TicketController extends Controller implements HasMiddleware
                 $item->open = false;
                 $item->save();
             }
+            return true;
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Ticket not closed');
-        }
-    }
-
-    /**
-    * @OA\Delete(
-    *     path="/admin/ticket/{id}",
-    *     tags={"AdminTicket"},
-    *     summary="DeleteOneItem",
-    *     description="Delete one Item",
-    *     @OA\Parameter(
-    *         name="id",
-    *         in="path",
-    *         required=true,
-    *         @OA\Schema(
-    *             type="integer"
-    *         )
-    *     ),
-    *     @OA\Response(
-    *         response=200,
-    *         description="Success Message",
-    *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
-    *     ),
-    *     @OA\Response(
-    *         response=400,
-    *         description="an 'unexpected' error",
-    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-    *     ),security={{"api_key": {}}}
-    * )
-    * Remove the specified resource from storage.
-    */
-    public function destroy(Int $id)
-    {
-        try {
-            $ticket = Ticket::findOrFail($id);
-            $id = $ticket->id;
-            $ticket->delete();
-            return $this->success("Ticket $id deleted");
-        } catch(Exception $e) {
-            Log::error($e->getMessage());
-            return $this->error('Ticket not deleted', status:400);
         }
     }
 }

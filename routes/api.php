@@ -61,7 +61,6 @@ Route::group([
     Route::group(['prefix'=>'messages'], function () {
         Route::post('{id}/reply', [AdminMessageController::class, 'store']);
         Route::put('{id}', [AdminMessageController::class, 'update']);
-        Route::delete('{id}', [AdminMessageController::class, 'destroy']);
         Route::get('{id}', [AdminMessageController::class, 'Messages']);
     });
 });
@@ -141,6 +140,5 @@ Route::group([
 Route::group(['prefix'=>'messages'], function () {
     Route::post('{id}/reply', [MessageController::class, 'store']);
     Route::put('{id}', [MessageController::class, 'update']);
-    Route::delete('{id}', [MessageController::class, 'destroy']);
     Route::get('{id}', [MessageController::class, 'Messages']);
 });
