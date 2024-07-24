@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminCommentController;
-use App\Http\Controllers\Admin\AdminTicketController;
 use App\Http\Controllers\Admin\BookController as AdminBookController;
+use App\Http\Controllers\Admin\CommentController as AdminCommentController;
+use App\Http\Controllers\Admin\MessageController as AdminMessageController;
+use App\Http\Controllers\Admin\TicketController as AdminTicketController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\AdminMessageController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
@@ -49,19 +49,20 @@ Route::group([
         Route::put('{id}', [AdminCommentController::class, 'update']);
         Route::delete('{id}', [AdminCommentController::class, 'destroy']);
     });
-    // FIXME: add message route
     Route::group([
         'prefix' => 'ticket'
     ], function ($router) {
         Route::get('', [AdminTicketController::class, 'index']);
         Route::get('open', [AdminTicketController::class, 'open']);
         Route::get('close', [AdminTicketController::class, 'closedTicket']);
-        Route::post('{id}/reply', [AdminMessageController::class, 'store']);
         Route::get('{id}', [AdminTicketController::class, 'show']);
+        Route::delete('{id}', [AdminTicketController::class, 'destroy']);
+    });
+    Route::group(['prefix'=>'messages'], function () {
+        Route::post('{id}/reply', [AdminMessageController::class, 'store']);
         Route::put('{id}', [AdminMessageController::class, 'update']);
-        Route::delete('{id}/message', [AdminMessageController::class, 'destroyMessage']);
         Route::delete('{id}', [AdminMessageController::class, 'destroy']);
-        Route::get('{id}/message', [AdminMessageController::class, 'showMessage']);
+        Route::get('{id}', [AdminMessageController::class, 'Messages']);
     });
 });
 
@@ -125,7 +126,6 @@ Route::group([
     Route::delete('{id}', [CommentController::class, 'destroy']);
 });
 
-// FIXME: add message route
 Route::group([
     'prefix' => 'ticket'
 ], function ($router) {
@@ -134,10 +134,13 @@ Route::group([
     Route::get('close', [TicketController::class, 'closedTicket']);
     Route::post('', [TicketController::class, 'store']);
     Route::post('{id}/close', [TicketController::class, 'closeTicket']);
-    Route::post('{id}/reply', [MessageController::class, 'reply']);
     Route::get('{id}', [TicketController::class, 'show']);
-    Route::get('{id}/message', [TicketController::class, 'showAllMessage']);
+    Route::delete('{id}', [TicketController::class, 'destroy']);
+});
+
+Route::group(['prefix'=>'messages'], function () {
+    Route::post('{id}/reply', [MessageController::class, 'store']);
     Route::put('{id}', [MessageController::class, 'update']);
     Route::delete('{id}', [MessageController::class, 'destroy']);
-    Route::delete('{id}/message', [MessageController::class, 'destroyMessage']);
+    Route::get('{id}', [MessageController::class, 'Messages']);
 });

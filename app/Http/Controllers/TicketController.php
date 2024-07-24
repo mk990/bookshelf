@@ -211,7 +211,7 @@ class TicketController extends Controller implements HasMiddleware
             if ($ticket->user_id !== auth()->id()) {
                 return $this->error('forbidden', status: 403);
             }
-            return $this->success($ticket->with("message"));
+            return $this->success($ticket->with('message'));
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Ticket not found');
@@ -322,11 +322,11 @@ class TicketController extends Controller implements HasMiddleware
     }
 
     /**
-     * @OA\Get(
-     *     path="/ticket/{id}/messages",
+     * @OA\Delete(
+     *     path="/ticket/{id}",
      *     tags={"Ticket"},
-     *     summary="getAllMessageItem",
-     *     description="get All Message Item",
+     *     summary="DeleteOneItem",
+     *     description="Delete one Item",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -338,28 +338,35 @@ class TicketController extends Controller implements HasMiddleware
      *     @OA\Response(
      *         response=200,
      *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
+     *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
      *     ),
      *     @OA\Response(
      *         response=400,
-     *         description="an ""unexpected"" error",
+     *         description="an 'unexpected' error",
      *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
      *     ),security={{"api_key": {}}}
      * )
-     * Display the specified resource.
+     * Remove the specified resource from storage.
      */
-    public function messages(int $id)
+    public function destroy(Int $id)
     {
         try {
             $ticket = Ticket::findOrFail($id);
-            if ($ticket->user_id != auth()->id()){
-                return $this->error('forbidden', status: 403);
-            }
             $message = Message::whereTicketId($ticket->id)->get();
-            return $this->success($message);
-        } catch (Exception $e) {
+            $id = $ticket->id;
+            foreach ($message as $item) {
+                if ($item->view === null) {
+                    if ($ticket->user_id !== auth()->id()) {
+                        return $this->error('forbidden', status:403);
+                    }
+                    $ticket->delete();
+                    return $this->success("Ticket $id deleted");
+                }
+                return $this->error('Ticket not deleted ( admin watch your ticket )');
+            }
+        } catch(Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Ticket not found');
+            return $this->error('Ticket not deleted', status:400);
         }
     }
 }

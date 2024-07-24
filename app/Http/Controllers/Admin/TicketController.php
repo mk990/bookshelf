@@ -3,15 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Message;
 use App\Models\Ticket;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Log;
 
-class AdminTicketController extends Controller implements HasMiddleware
+class TicketController extends Controller implements HasMiddleware
 {
     public static function middleware(): array
     {
@@ -215,6 +213,60 @@ class AdminTicketController extends Controller implements HasMiddleware
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Ticket not found');
+        }
+    }
+
+    public function updateStatusTicket()
+    {
+        try {
+            $ticket = Ticket::where('last_message', '<=', now()->subDay(2))->get();
+            foreach ($ticket as $item) {
+                $item->open = false;
+                $item->save();
+            }
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('Ticket not closed');
+        }
+    }
+
+    /**
+    * @OA\Delete(
+    *     path="/admin/ticket/{id}",
+    *     tags={"AdminTicket"},
+    *     summary="DeleteOneItem",
+    *     description="Delete one Item",
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         @OA\Schema(
+    *             type="integer"
+    *         )
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Success Message",
+    *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
+    *     ),
+    *     @OA\Response(
+    *         response=400,
+    *         description="an 'unexpected' error",
+    *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+    *     ),security={{"api_key": {}}}
+    * )
+    * Remove the specified resource from storage.
+    */
+    public function destroy(Int $id)
+    {
+        try {
+            $ticket = Ticket::findOrFail($id);
+            $id = $ticket->id;
+            $ticket->delete();
+            return $this->success("Ticket $id deleted");
+        } catch(Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('Ticket not deleted', status:400);
         }
     }
 }
