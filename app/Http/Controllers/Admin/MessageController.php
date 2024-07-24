@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Message;
 use App\Models\Ticket;
 use Exception;
@@ -10,7 +11,7 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Log;
 
-class AdminMessageController extends Controller implements HasMiddleware
+class MessageController extends Controller implements HasMiddleware
 {
     public static function middleware(): array
     {
@@ -21,8 +22,8 @@ class AdminMessageController extends Controller implements HasMiddleware
 
     /**
      * @OA\Post(
-     *     path="/admin/ticket/{id}/reply",
-     *     tags={"AdminTicket"},
+     *     path="/admin/messages/{id}/reply",
+     *     tags={"AdminMessages"},
      *     summary="ReplyToOneItem",
      *     description="Reply To One Item",
      *     @OA\Parameter(
@@ -81,14 +82,15 @@ class AdminMessageController extends Controller implements HasMiddleware
 
     /**
      * @OA\Get(
-     *     path="/admin/ticket/{id}/message",
-     *     tags={"AdminTicket"},
-     *     summary="getOneItem",
-     *     description="get One Item",
+     *     path="/admin/messages/{id}",
+     *     tags={"AdminMessages"},
+     *     summary="getAllItem",
+     *     description="get All Item",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
+     *         description="ticket id",
      *         @OA\Schema(
      *             type="integer"
      *         )
@@ -106,7 +108,7 @@ class AdminMessageController extends Controller implements HasMiddleware
      * )
      * show message ticket for admin.
      */
-    public function showMessage(Int $id)
+    public function Messages(Int $id)
     {
         try {
             $ticket = Ticket::findOrFail($id);
@@ -122,8 +124,8 @@ class AdminMessageController extends Controller implements HasMiddleware
 
     /**
      * @OA\Put(
-     *     path="/admin/ticket/{id}",
-     *     tags={"AdminTicket"},
+     *     path="/admin/messages/{id}",
+     *     tags={"AdminMessages"},
      *     summary="EditOneItem",
      *     description="edit one Item",
      *     @OA\Parameter(
@@ -184,56 +186,10 @@ class AdminMessageController extends Controller implements HasMiddleware
 
     /**
      * @OA\Delete(
-     *     path="/admin/ticket/{id}/message",
-     *     tags={"AdminTicket"},
+     *     path="/admin/messages/{id}",
+     *     tags={"AdminMessages"},
      *     summary="DeleteOneMessageItem",
      *     description="Delete one message Item",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="an 'unexpected' error",
-     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-     *     ),security={{"api_key": {}}}
-     * )
-     * Remove the specified resource from storage.
-     */
-    public function destroyMessage(Int $id)
-    {
-        try {
-            $message = Message::findOrFail($id);
-            $id = $message->id;
-            if ($message->view === null) {
-                if ($message->user_id !== auth()->id()) {
-                    return $this->error('forbidden', status:403);
-                }
-                $message->delete();
-                return $this->success("Message $id deleted");
-            }
-            return $this->error('Message not deleted ( user watch your Message )');
-        } catch(Exception $e) {
-            Log::error($e->getMessage());
-            return $this->error('Message not deleted', status:400);
-        }
-    }
-
-    /**
-     * @OA\Delete(
-     *     path="/admin/ticket/{id}",
-     *     tags={"AdminTicket"},
-     *     summary="DeleteOneItem",
-     *     description="Delete one Item",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -258,13 +214,19 @@ class AdminMessageController extends Controller implements HasMiddleware
     public function destroy(Int $id)
     {
         try {
-            $ticket = Ticket::findOrFail($id);
-            $id = $ticket->id;
-            $ticket->delete();
-            return $this->success("Ticket $id deleted");
+            $message = Message::findOrFail($id);
+            $id = $message->id;
+            if ($message->view === null) {
+                if ($message->user_id !== auth()->id()) {
+                    return $this->error('forbidden', status:403);
+                }
+                $message->delete();
+                return $this->success("Message $id deleted");
+            }
+            return $this->error('Message not deleted ( user watch your Message )');
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Ticket not deleted', status:400);
+            return $this->error('Message not deleted', status:400);
         }
     }
 }

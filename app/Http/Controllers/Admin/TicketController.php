@@ -3,15 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Message;
 use App\Models\Ticket;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Log;
 
-class AdminTicketController extends Controller implements HasMiddleware
+class TicketController extends Controller implements HasMiddleware
 {
     public static function middleware(): array
     {
@@ -215,6 +213,21 @@ class AdminTicketController extends Controller implements HasMiddleware
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Ticket not found');
+        }
+    }
+
+    public function updateStatusTicket()
+    {
+        try {
+            $ticket = Ticket::where('last_message', '<=', now()->subDay(2))->get();
+            foreach ($ticket as $item) {
+                $item->open = false;
+                $item->save();
+            }
+            return true;
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('Ticket not closed');
         }
     }
 }

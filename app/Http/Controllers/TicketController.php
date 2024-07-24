@@ -211,7 +211,7 @@ class TicketController extends Controller implements HasMiddleware
             if ($ticket->user_id !== auth()->id()) {
                 return $this->error('forbidden', status: 403);
             }
-            return $this->success($ticket->with("message"));
+            return $this->success($ticket->with('message'));
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Ticket not found');
@@ -318,48 +318,6 @@ class TicketController extends Controller implements HasMiddleware
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Ticket not updated');
-        }
-    }
-
-    /**
-     * @OA\Get(
-     *     path="/ticket/{id}/messages",
-     *     tags={"Ticket"},
-     *     summary="getAllMessageItem",
-     *     description="get All Message Item",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="an ""unexpected"" error",
-     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-     *     ),security={{"api_key": {}}}
-     * )
-     * Display the specified resource.
-     */
-    public function messages(int $id)
-    {
-        try {
-            $ticket = Ticket::findOrFail($id);
-            if ($ticket->user_id != auth()->id()){
-                return $this->error('forbidden', status: 403);
-            }
-            $message = Message::whereTicketId($ticket->id)->get();
-            return $this->success($message);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return $this->error('Ticket not found');
         }
     }
 }

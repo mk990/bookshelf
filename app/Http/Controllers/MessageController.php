@@ -19,11 +19,10 @@ class MessageController extends Controller implements HasMiddleware
         ];
     }
 
-    // FIXME: add post /message
     /**
      * @OA\Post(
-     *     path="/ticket/{id}/reply",
-     *     tags={"Ticket"},
+     *     path="/messages/{id}/reply",
+     *     tags={"Messages"},
      *     summary="ReplyToOneItem ",
      *     description="Reply To One Item (for users)",
      *     @OA\Parameter(
@@ -59,7 +58,7 @@ class MessageController extends Controller implements HasMiddleware
      * )
      * write a message from users
      */
-    public function reply(Request $request, int $id)
+    public function store(Request $request, int $id)
     {
         $request->validate([
             'message'  => 'required|string'
@@ -83,11 +82,10 @@ class MessageController extends Controller implements HasMiddleware
         }
     }
 
-    // FIXME:
     /**
      * @OA\Put(
-     *     path="/ticket/{id}",
-     *     tags={"Ticket"},
+     *     path="/messages/{id}",
+     *     tags={"Messages"},
      *     summary="EditOneItem",
      *     description="edit one Item",
      *     @OA\Parameter(
@@ -157,61 +155,10 @@ class MessageController extends Controller implements HasMiddleware
         }
     }
 
-    // FIXME:
     /**
      * @OA\Delete(
-     *     path="/ticket/{id}",
-     *     tags={"Ticket"},
-     *     summary="DeleteOneItem",
-     *     description="Delete one Item",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="an 'unexpected' error",
-     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-     *     ),security={{"api_key": {}}}
-     * )
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Int $id)
-    {
-        try {
-            $ticket = Ticket::findOrFail($id);
-            $message = Message::whereTicketId($ticket->id)->get();
-            $id = $ticket->id;
-            foreach ($message as $item) {
-                if ($item->view === null) {
-                    if ($ticket->user_id !== auth()->id()) {
-                        return $this->error('forbidden', status:403);
-                    }
-                    $ticket->delete();
-                    return $this->success("Ticket $id deleted");
-                }
-                return $this->error('Ticket not deleted ( admin watch your ticket )');
-            }
-        } catch(Exception $e) {
-            Log::error($e->getMessage());
-            return $this->error('Ticket not deleted', status:400);
-        }
-    }
-
-    // FIXME:
-    /**
-     * @OA\Delete(
-     *     path="/ticket/{id}/message",
-     *     tags={"Ticket"},
+     *     path="/messages/{id}/message",
+     *     tags={"Messages"},
      *     summary="DeleteOneMessageItem",
      *     description="Delete Message one Item",
      *     @OA\Parameter(
@@ -251,6 +198,44 @@ class MessageController extends Controller implements HasMiddleware
         } catch(Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Message not deleted', status:400);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/messages/{id}",
+     *     tags={"Messages"},
+     *     summary="getAllMessageItem",
+     *     description="get All Message Item",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success Message",
+     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="an ""unexpected"" error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),security={{"api_key": {}}}
+     * )
+     * Display the specified resource.
+     */
+    public function messages(int $id)
+    {
+        try {
+            $ticket = Ticket::whereUserId(auth()->id())->with('message')->findOrFail($id);
+            return $this->success($ticket);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('Ticket not found');
         }
     }
 }

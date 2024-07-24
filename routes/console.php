@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminTicketController;
+use App\Http\Controllers\Admin\TicketController;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Http;
@@ -28,3 +30,7 @@ Schedule::command('backup:run')
     ->after(function () {
         return true;
     })->daily();
+
+Schedule::call(function () {
+    return (new TicketController())->updateStatusTicket();
+})->daily();
