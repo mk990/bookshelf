@@ -58,21 +58,19 @@ class MessageController extends Controller implements HasMiddleware
      * )
      * write a message from users
      */
-    public function store(Request $request, int $id)
+    public function store(Request $request)
     {
         $request->validate([
+            'ticket_id'=> 'required|string',
             'message'  => 'required|string'
         ]);
         try {
-            $ticket = Ticket::findOrFail($id);
+            $ticket = Ticket::findOrFail($request->ticket_id);
             if ($ticket->user_id !== auth()->id()) {
                 return $this->error('forbidden', status:403);
             }
-            $message = Message::create([
-                'user_id'     => $request->user_id,
-                'ticket_id'   => $ticket->id,
-                'message'     => $request->message,
-            ]);
+            $message = Message::create($request->only(['user_id', 'message', 'ticket_id']));
+
             $ticket->last_message = $message->created_at;
             $ticket->save();
             return $this->success($message);
@@ -130,25 +128,17 @@ class MessageController extends Controller implements HasMiddleware
     public function update(Request $request, int $id)
     {
         $request->validate([
-            'title'    => 'required|string',
             'message'  => 'required|string'
         ]);
         try {
-            $ticket = Ticket::findOrFail($id);
-            $message = Message::whereTicketId($ticket->id)->get();
-            foreach ($message as $item) {
-                if ($item->view === null) {
-                    if ($item->user_id !== auth()->id()) {
-                        return $this->error('forbidden', status:403);
-                    }
-                    $ticket->update($request->all());
-                    $message->update([
-                        'message'     => $request->message,
-                    ]);
-                    return $this->success($ticket);
-                }
-                return $this->error('Ticket not updated ( admin watch your ticket )');
+            $message = Message::findOrFail($id);
+            if ($message->user_id !== auth()->id() || empty($message->view)) {
+                return $this->error('forbidden', status:403);
             }
+            $message->update([
+                'message'     => $request->message,
+            ]);
+            return $this->success($message);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Ticket not updated');
@@ -186,14 +176,11 @@ class MessageController extends Controller implements HasMiddleware
     {
         try {
             $message = Message::findOrFail($id);
-            $id = $message->id;
-            if ($message->view === null) {
-                if ($message->user_id !== auth()->id()) {
-                    return $this->error('forbidden', status:403);
-                }
-                $message->delete();
-                return $this->success("Message $id deleted");
+            if ($message->user_id !== auth()->id() || empty($message->view)) {
+                return $this->error('forbidden', status:403);
             }
+            $message->delete();
+            return $this->success("Message $id deleted");
             return $this->error('Message not deleted ( admin watch your ticket )');
         } catch(Exception $e) {
             Log::error($e->getMessage());
