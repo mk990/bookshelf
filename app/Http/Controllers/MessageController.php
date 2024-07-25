@@ -132,7 +132,7 @@ class MessageController extends Controller implements HasMiddleware
         ]);
         try {
             $message = Message::findOrFail($id);
-            if ($message->user_id !== auth()->id() || empty($message->view)) {
+            if ($message->user_id !== auth()->id() || !empty($message->view)) {
                 return $this->error('forbidden', status:403);
             }
             $message->update([
@@ -176,7 +176,7 @@ class MessageController extends Controller implements HasMiddleware
     {
         try {
             $message = Message::findOrFail($id);
-            if ($message->user_id !== auth()->id() || empty($message->view)) {
+            if ($message->user_id !== auth()->id() || !empty($message->view)) {
                 return $this->error('forbidden', status:403);
             }
             $message->delete();
