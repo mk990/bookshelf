@@ -10,6 +10,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactUsController;
+use App\Http\Controllers\ContentController;
 use App\Http\Controllers\ExampleController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\QuotesController;
@@ -141,4 +142,12 @@ Route::group(['prefix'=>'messages'], function () {
     Route::post('{id}/reply', [MessageController::class, 'store']);
     Route::put('{id}', [MessageController::class, 'update']);
     Route::get('{id}', [MessageController::class, 'Messages']);
+});
+Route::group([
+    'prefix' => 'content'
+], function ($router) {
+    Route::get('', [ContentController::class, 'index']);
+    Route::post('', [ContentController::class, 'store']);
+    Route::get('{id}', [ContentController::class, 'show']);
+    Route::put('{id}', [ContentController::class, 'update']);
 });
