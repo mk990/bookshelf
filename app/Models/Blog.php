@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 /**
  * @OA\Schema(
- *     schema="ContentModel",
- *     title="Content Model",
- *     description="Represents a content",
+ *     schema="BlogModel",
+ *     title="Blog Model",
+ *     description="Represents a Blog",
  *     @OA\Property(
  *         property="id",
  *         type="integer",
@@ -18,25 +17,18 @@ use Illuminate\Database\Eloquent\Model;
  *     ),
  *     @OA\Property(
  *         property="title",
- *         type="integer",
- *         format="int32",
- *         description="User ID"
+ *         type="string",
+ *         description="title"
  *     ),
  *     @OA\Property(
  *         property="description",
- *         type="integer",
- *         format="int32",
- *         description="Category ID"
- *     ),
- *     @OA\Property(
- *         property="content",
  *         type="string",
- *         description="Book title"
+ *         description="description ID"
  *     ),
  *     @OA\Property(
- *         property="verify",
- *         type="boolean",
- *         description="Book author"
+ *         property="article",
+ *         type="string",
+ *         description="article"
  *     ),
  *     @OA\Property(
  *         property="created_at",
@@ -52,8 +44,8 @@ use Illuminate\Database\Eloquent\Model;
  *     )
  * )
  */
-class Content extends Model
+class Blog extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'description', 'content', 'verified'];
+    protected $fillable = ['title', 'description', 'article', 'verified'];
 }

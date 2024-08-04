@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Content;
+use App\Models\Blog;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class ContentController extends Controller
+class BlogController extends Controller
 {
     /**
     * @OA\Get(
-    *     path="/content",
-    *     tags={"Content"},
+    *     path="/blog",
+    *     tags={"Blog"},
     *     summary="listAllItem",
     *     description="list all Item",
     *     @OA\Parameter(
@@ -37,7 +37,7 @@ class ContentController extends Controller
     *             @OA\Property(
     *                 property="data",
     *                 type="array",
-    *                 @OA\Items(ref="#/components/schemas/ContentModel"),
+    *                 @OA\Items(ref="#/components/schemas/BlogModel"),
     *                 description="List of item"
     *             ),
     *             @OA\Property(
@@ -105,13 +105,13 @@ class ContentController extends Controller
     */
     public function index()
     {
-        return $this->success(Content::latest()->whereIsVerified(1)->paginate(20));
+        return $this->success(Blog::latest()->whereIsVerified(1)->paginate(20));
     }
 
     /**
         * @OA\Post(
-        *     path="/content",
-        *     tags={"Content"},
+        *     path="/blog",
+        *     tags={"Blog"},
         *     summary="MakeOneItem",
         *     description="make one Item",
         *     @OA\RequestBody(
@@ -132,9 +132,9 @@ class ContentController extends Controller
         *                 example="description",
         *             ),
         *             @OA\Property(
-        *                 property="content",
+        *                 property="article",
         *                 type="string",
-        *                 description="content",
+        *                 description="article",
         *                 default="null",
         *                 example=1,
         *             )
@@ -151,18 +151,18 @@ class ContentController extends Controller
         *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
         *     ),security={{"api_key": {}}}
         * )
-        * Make a book
+        * Make a blog
         */
     public function store(Request $request)
     {
         $request->validate([
             'title'          => 'required',
             'description'    => 'required',
-            'content'        => 'required'
+            'article'        => 'required'
         ]);
 
         try {
-            $book = Content::create($request->all());
+            $book = Blog::create($request->all());
             return $this->success($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
@@ -172,8 +172,8 @@ class ContentController extends Controller
 
     /**
         * @OA\Get(
-        *     path="/content/{id}",
-        *     tags={"Content"},
+        *     path="/blog/{id}",
+        *     tags={"Blog"},
         *     summary="getOneItem",
         *     description="get One Item",
         *     @OA\Parameter(
@@ -200,7 +200,7 @@ class ContentController extends Controller
     public function show(Int $id)
     {
         try {
-            $content = Content::findOrFail($id);
+            $content = Blog::findOrFail($id);
             if ($content->user_id !== auth()->id() && $content->verified == 0) {
                 return $this->error('forbidden', status:403);
             }
@@ -213,8 +213,8 @@ class ContentController extends Controller
 
     /**
         * @OA\Put(
-        *     path="/content/{id}",
-        *     tags={"Content"},
+        *     path="/blog/{id}",
+        *     tags={"Blog"},
         *     summary="EditOneItem",
         *     description="edit one Item",
         *     @OA\Parameter(
@@ -243,9 +243,9 @@ class ContentController extends Controller
         *                 example="description Item",
         *             ),
         *             @OA\Property(
-        *                 property="content",
+        *                 property="article",
         *                 type="string",
-        *                 description="content",
+        *                 description="article",
         *                 default="null",
         *                 example="content Item",
         *             )
@@ -269,11 +269,11 @@ class ContentController extends Controller
         $request->validate([
             'title'        => 'required',
             'description'  => 'required',
-            'content'      => 'required'
+            'article'      => 'required'
         ]);
 
         try {
-            $book = Content::findOrFail($id);
+            $book = Blog::findOrFail($id);
             if ($book->user_id !== auth()->id() || $book->verified == 1) {
                 return $this->error('forbidden', status:403);
             }

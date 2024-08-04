@@ -6,12 +6,14 @@ use App\Http\Controllers\Admin\MessageController as AdminMessageController;
 use App\Http\Controllers\Admin\TicketController as AdminTicketController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\ExampleController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\QuotesController;
 use App\Http\Controllers\TicketController;
@@ -41,15 +43,15 @@ Route::group([
         Route::put('verify/{id}', [AdminBookController::class, 'verifyBook']);
         Route::delete('{id}', [AdminBookController::class, 'destroy']);
     });
-    Route::group([
-        'prefix' => 'comment'
-    ], function ($router) {
-        Route::get('', [AdminCommentController::class, 'index']);
+     Route::group([
+         'prefix' => 'comment'
+     ], function ($router) {
+         Route::get('', [AdminCommentController::class, 'index']);
         Route::post('', [AdminCommentController::class, 'store']);
-        Route::get('{id}', [AdminCommentController::class, 'show']);
-        Route::put('{id}', [AdminCommentController::class, 'update']);
-        Route::delete('{id}', [AdminCommentController::class, 'destroy']);
-    });
+         Route::get('{id}', [AdminCommentController::class, 'show']);
+         Route::put('{id}', [AdminCommentController::class, 'update']);
+         Route::delete('{id}', [AdminCommentController::class, 'destroy']);
+     });
     Route::group([
         'prefix' => 'ticket'
     ], function ($router) {
@@ -82,25 +84,25 @@ Route::group([
     Route::post('forgotPassword/{token}', [AuthController::class, 'setForgotPassword'])->name('change-password');
 });
 
-Route::group([
-    'prefix' => 'book'
-], function ($router) {
-    Route::get('', [BookController::class, 'index']);
-    Route::post('', [BookController::class, 'store']);
-    Route::get('{id}', [BookController::class, 'show']);
-    Route::put('{id}', [BookController::class, 'update']);
-    Route::delete('{id}', [BookController::class, 'destroy']);
-});
+// Route::group([
+//     'prefix' => 'book'
+// ], function ($router) {
+//     Route::get('', [BookController::class, 'index']);
+//     Route::post('', [BookController::class, 'store']);
+//     Route::get('{id}', [BookController::class, 'show']);
+//     Route::put('{id}', [BookController::class, 'update']);
+//     Route::delete('{id}', [BookController::class, 'destroy']);
+// });
 
-Route::group([
-    'prefix' => 'category'
-], function ($router) {
-    Route::get('', [CategoryController::class, 'index']);
-    Route::post('', [CategoryController::class, 'store']);
-    Route::get('{id}', [CategoryController::class, 'show']);
-    Route::put('{id}', [CategoryController::class, 'update']);
-    Route::delete('{id}', [CategoryController::class, 'destroy']);
-});
+// Route::group([
+//     'prefix' => 'category'
+// ], function ($router) {
+//     Route::get('', [CategoryController::class, 'index']);
+//     Route::post('', [CategoryController::class, 'store']);
+//     Route::get('{id}', [CategoryController::class, 'show']);
+//     Route::put('{id}', [CategoryController::class, 'update']);
+//     Route::delete('{id}', [CategoryController::class, 'destroy']);
+// });
 Route::group([
     'prefix' => 'quote'
 ], function ($router) {
@@ -143,11 +145,25 @@ Route::group(['prefix'=>'messages'], function () {
     Route::put('{id}', [MessageController::class, 'update']);
     Route::get('{id}', [MessageController::class, 'Messages']);
 });
+// Route::group([
+//     'prefix' => 'blog'
+// ], function ($router) {
+//     Route::get('', [BlogController::class, 'index']);
+//     Route::post('', [BlogController::class, 'store']);
+//     Route::get('{id}', [BlogController::class, 'show']);
+//     Route::put('{id}', [BlogController::class, 'update']);
+// });
+Route::resources([
+    'blog' => BlogController::class,
+    'category'=>CategoryController::class,
+    'book'=>BookController::class,
+    'comment'=>AdminCommentController::class,
+]);
+
 Route::group([
-    'prefix' => 'content'
+    'prefix' => 'home'
 ], function ($router) {
-    Route::get('', [ContentController::class, 'index']);
-    Route::post('', [ContentController::class, 'store']);
-    Route::get('{id}', [ContentController::class, 'show']);
-    Route::put('{id}', [ContentController::class, 'update']);
+    Route::get('/categories', [HomeController::class, 'categories']);
+    Route::get('/book', [HomeController::class, 'book']);
+    Route::get('/qoutes', [HomeController::class, 'qoutes']);
 });
