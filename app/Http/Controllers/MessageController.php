@@ -20,11 +20,11 @@ class MessageController extends Controller implements HasMiddleware
     }
 
     /**
-     * @OA\Post(
-     *     path="/messages/{id}/reply",
+     * @OA\Get(
+     *     path="/messages/{id}",
      *     tags={"Messages"},
-     *     summary="ReplyToOneItem ",
-     *     description="Reply To One Item (for users)",
+     *     summary="getAllMessageItem",
+     *     description="get All Message Item",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -33,11 +33,47 @@ class MessageController extends Controller implements HasMiddleware
      *             type="integer"
      *         )
      *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success Message",
+     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="an ""unexpected"" error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),security={{"api_key": {}}}
+     * )
+     * Display the specified resource.
+     */
+    public function messages(int $id)
+    {
+        try {
+            $ticket = Ticket::whereUserId(auth()->id())->with('message')->findOrFail($id);
+            return $this->success($ticket);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('Ticket not found');
+        }
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/messages/{id}",
+     *     tags={"Messages"},
+     *     summary="ReplyToOneItem ",
+     *     description="Reply To One Item (for users)",
      *     @OA\RequestBody(
      *         description="tasks input",
      *         required=true,
      *         @OA\JsonContent(
      *             @OA\Property(
+     *                 property="ticket_id",
+     *                 type="string",
+     *                 description="your ticket id",
+     *                 example="1"
+     *             ),
+     *              @OA\Property(
      *                 property="message",
      *                 type="string",
      *                 description="your message",
@@ -104,12 +140,6 @@ class MessageController extends Controller implements HasMiddleware
      *                 description="your message",
      *                 example="message"
      *             ),
-     *             @OA\Property(
-     *                 property="title",
-     *                 type="string",
-     *                 description="your title ticket",
-     *                 example="title ticket"
-     *             ),
      *         )
      *     ),
      *     @OA\Response(
@@ -172,7 +202,7 @@ class MessageController extends Controller implements HasMiddleware
      * )
      * Remove the specified resource from storage.
      */
-    public function destroyMessage(Int $id)
+    public function destroy(Int $id)
     {
         try {
             $message = Message::findOrFail($id);
@@ -185,44 +215,6 @@ class MessageController extends Controller implements HasMiddleware
         } catch(Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Message not deleted', status:400);
-        }
-    }
-
-    /**
-     * @OA\Get(
-     *     path="/messages/{id}",
-     *     tags={"Messages"},
-     *     summary="getAllMessageItem",
-     *     description="get All Message Item",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(
-     *             type="integer"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success Message",
-     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="an ""unexpected"" error",
-     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
-     *     ),security={{"api_key": {}}}
-     * )
-     * Display the specified resource.
-     */
-    public function messages(int $id)
-    {
-        try {
-            $ticket = Ticket::whereUserId(auth()->id())->with('message')->findOrFail($id);
-            return $this->success($ticket);
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            return $this->error('Ticket not found');
         }
     }
 }

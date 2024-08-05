@@ -211,7 +211,7 @@ class TicketController extends Controller implements HasMiddleware
             if ($ticket->user_id !== auth()->id()) {
                 return $this->error('forbidden', status: 403);
             }
-            return $this->success($ticket->with('message'));
+            return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Ticket not found');

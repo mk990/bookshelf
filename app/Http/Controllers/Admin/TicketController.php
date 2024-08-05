@@ -148,7 +148,6 @@ class TicketController extends Controller implements HasMiddleware
     {
         try {
             $ticket = Ticket::findOrFail($id);
-            $ticket->message;
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
