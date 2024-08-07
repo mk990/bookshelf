@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\Quotes;
-use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -32,7 +31,8 @@ class HomeController extends Controller
     {
         return $this->success(Category::latest()->limit(5)->get());
     }
-/**
+
+    /**
      * @OA\Get(
      *     path="/home/book",
      *     tags={"Home"},
@@ -55,7 +55,8 @@ class HomeController extends Controller
     {
         return $this->success(Book::latest()->limit(5)->get());
     }
-/**
+
+    /**
      * @OA\Get(
      *     path="/home/qoutes",
      *     tags={"Home"},

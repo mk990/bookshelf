@@ -11,7 +11,6 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ContactUsController;
-use App\Http\Controllers\ContentController;
 use App\Http\Controllers\ExampleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MessageController;
@@ -43,15 +42,15 @@ Route::group([
         Route::put('verify/{id}', [AdminBookController::class, 'verifyBook']);
         Route::delete('{id}', [AdminBookController::class, 'destroy']);
     });
-     Route::group([
-         'prefix' => 'comment'
-     ], function ($router) {
-         Route::get('', [AdminCommentController::class, 'index']);
+    Route::group([
+        'prefix' => 'comment'
+    ], function ($router) {
+        Route::get('', [AdminCommentController::class, 'index']);
         Route::post('', [AdminCommentController::class, 'store']);
-         Route::get('{id}', [AdminCommentController::class, 'show']);
-         Route::put('{id}', [AdminCommentController::class, 'update']);
-         Route::delete('{id}', [AdminCommentController::class, 'destroy']);
-     });
+        Route::get('{id}', [AdminCommentController::class, 'show']);
+        Route::put('{id}', [AdminCommentController::class, 'update']);
+        Route::delete('{id}', [AdminCommentController::class, 'destroy']);
+    });
     Route::group([
         'prefix' => 'ticket'
     ], function ($router) {
@@ -130,17 +129,14 @@ Route::group([
 Route::group([
     'prefix' => 'ticket'
 ], function ($router) {
-    Route::get('', [TicketController::class, 'index']);
+    Route::apiResource('', TicketController::class);
     Route::get('open', [TicketController::class, 'open']);
     Route::get('close', [TicketController::class, 'closedTicket']);
-    Route::post('', [TicketController::class, 'store']);
     Route::post('{id}/close', [TicketController::class, 'closeTicket']);
-    Route::get('{id}', [TicketController::class, 'show']);
-    Route::delete('{id}', [TicketController::class, 'destroy']);
 });
 
 Route::group([
-    'prefix'=>'messages'
+    'prefix' => 'messages'
 ], function () {
     Route::post('{id}', [MessageController::class, 'store']);
     Route::put('{id}', [MessageController::class, 'update']);
@@ -156,10 +152,10 @@ Route::group([
 //     Route::put('{id}', [BlogController::class, 'update']);
 // });
 Route::resources([
-    'blog' => BlogController::class,
-    'category'=>CategoryController::class,
-    'book'=>BookController::class,
-    'comment'=>AdminCommentController::class,
+    'blog'    => BlogController::class,
+    'category'=> CategoryController::class,
+    'book'    => BookController::class,
+    'comment' => AdminCommentController::class,
 ]);
 
 Route::group([

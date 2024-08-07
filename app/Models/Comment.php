@@ -66,7 +66,6 @@ class Comment extends Model
         'user_id',
         'book_id',
         'text',
-        'verified',
         'stars'
     ];
 

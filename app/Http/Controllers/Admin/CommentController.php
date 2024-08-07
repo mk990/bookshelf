@@ -334,8 +334,8 @@ class CommentController extends Controller implements HasMiddleware
     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
     *     ),security={{"api_key": {}}}
     * )
-     * Remove the specified resource from storage.
-     */
+    * Remove the specified resource from storage.
+    */
     public function destroy(Int $id)
     {
         try {
