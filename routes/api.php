@@ -62,9 +62,10 @@ Route::group([
         Route::delete('{id}', [AdminTicketController::class, 'destroy']);
     });
     Route::group(['prefix'=>'messages'], function () {
-        Route::post('{id}/reply', [AdminMessageController::class, 'store']);
+        Route::post('{id}', [AdminMessageController::class, 'store']);
         Route::put('{id}', [AdminMessageController::class, 'update']);
         Route::get('{id}', [AdminMessageController::class, 'Messages']);
+        Route::delete('{id}', [AdminMessageController::class, 'destroy']);
     });
 });
 
@@ -116,8 +117,6 @@ Route::get('test', [ExampleController::class, 'test']);
 Route::get('test1', [ExampleController::class, 'test1']);
 Route::post('contact-us', [ContactUsController::class, 'contact']);
 
-//Route::post('change-password',[AuthController::class,'changePassword']);
-
 Route::group([
     'prefix' => 'comment'
 ], function ($router) {
@@ -140,10 +139,13 @@ Route::group([
     Route::delete('{id}', [TicketController::class, 'destroy']);
 });
 
-Route::group(['prefix'=>'messages'], function () {
-    Route::post('{id}/reply', [MessageController::class, 'store']);
+Route::group([
+    'prefix'=>'messages'
+], function () {
+    Route::post('{id}', [MessageController::class, 'store']);
     Route::put('{id}', [MessageController::class, 'update']);
     Route::get('{id}', [MessageController::class, 'Messages']);
+    Route::delete('{id}', [MessageController::class, 'destroy']);
 });
 // Route::group([
 //     'prefix' => 'blog'
