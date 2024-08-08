@@ -24,45 +24,30 @@ Route::group([
     Route::group([
         'prefix' => 'user'
     ], function ($router) {
-        Route::get('', [UserController::class, 'index']);
-        Route::post('', [UserController::class, 'store']);
-        Route::get('{id}', [UserController::class, 'show']);
-        Route::put('{id}', [UserController::class, 'update']);
-        Route::delete('{id}', [UserController::class, 'destroy']);
+        Route::apiResource('', UserController::class);
     });
     Route::group([
         'prefix' => 'book'
     ], function ($router) {
-        Route::get('', [AdminBookController::class, 'index']);
-        Route::post('', [AdminBookController::class, 'store']);
+        Route::apiResource('', AdminBookController::class);
         Route::post('{id}/picture', [AdminBookController::class, 'upload']);
         Route::get('unConfirmed', [AdminBookController::class, 'unConfirmed']);
-        Route::get('{id}', [AdminBookController::class, 'show']);
-        Route::put('{id}', [AdminBookController::class, 'update']);
         Route::put('verify/{id}', [AdminBookController::class, 'verifyBook']);
-        Route::delete('{id}', [AdminBookController::class, 'destroy']);
     });
     Route::group([
         'prefix' => 'comment'
     ], function ($router) {
-        Route::get('', [AdminCommentController::class, 'index']);
-        Route::post('', [AdminCommentController::class, 'store']);
-        Route::get('{id}', [AdminCommentController::class, 'show']);
-        Route::put('{id}', [AdminCommentController::class, 'update']);
-        Route::delete('{id}', [AdminCommentController::class, 'destroy']);
+        Route::apiResource('', AdminCommentController::class);
     });
     Route::group([
         'prefix' => 'ticket'
     ], function ($router) {
-        Route::get('', [AdminTicketController::class, 'index']);
+        Route::apiResource('', AdminTicketController::class);
         Route::get('open', [AdminTicketController::class, 'open']);
         Route::get('close', [AdminTicketController::class, 'closedTicket']);
-        Route::get('{id}', [AdminTicketController::class, 'show']);
-        Route::delete('{id}', [AdminTicketController::class, 'destroy']);
     });
     Route::group(['prefix'=>'messages'], function () {
-        Route::post('{id}', [AdminMessageController::class, 'store']);
-        Route::put('{id}', [AdminMessageController::class, 'update']);
+        Route::apiResource('', AdminTicketController::class);
         Route::get('{id}', [AdminMessageController::class, 'Messages']);
         Route::delete('{id}', [AdminMessageController::class, 'destroy']);
     });
@@ -84,32 +69,10 @@ Route::group([
     Route::post('forgotPassword/{token}', [AuthController::class, 'setForgotPassword'])->name('change-password');
 });
 
-// Route::group([
-//     'prefix' => 'book'
-// ], function ($router) {
-//     Route::get('', [BookController::class, 'index']);
-//     Route::post('', [BookController::class, 'store']);
-//     Route::get('{id}', [BookController::class, 'show']);
-//     Route::put('{id}', [BookController::class, 'update']);
-//     Route::delete('{id}', [BookController::class, 'destroy']);
-// });
-
-// Route::group([
-//     'prefix' => 'category'
-// ], function ($router) {
-//     Route::get('', [CategoryController::class, 'index']);
-//     Route::post('', [CategoryController::class, 'store']);
-//     Route::get('{id}', [CategoryController::class, 'show']);
-//     Route::put('{id}', [CategoryController::class, 'update']);
-//     Route::delete('{id}', [CategoryController::class, 'destroy']);
-// });
 Route::group([
     'prefix' => 'quote'
 ], function ($router) {
-    Route::get('', [QuotesController::class, 'quote']);
-    Route::post('', [QuotesController::class, 'store']);
-    Route::put('{id}', [QuotesController::class, 'update']);
-    Route::delete('{id}', [QuotesController::class, 'destroy']);
+    Route::apiResource('', QuotesController::class);
 });
 
 Route::get('test', [ExampleController::class, 'test']);
@@ -119,11 +82,8 @@ Route::post('contact-us', [ContactUsController::class, 'contact']);
 Route::group([
     'prefix' => 'comment'
 ], function ($router) {
-    Route::get('', [CommentController::class, 'index']);
-    Route::post('', [CommentController::class, 'store']);
+    Route::apiResource('', CommentController::class);
     Route::get('top', [CommentController::class, 'topComments']);
-    Route::put('{id}', [CommentController::class, 'update']);
-    Route::delete('{id}', [CommentController::class, 'destroy']);
 });
 
 Route::group([
@@ -138,25 +98,21 @@ Route::group([
 Route::group([
     'prefix' => 'messages'
 ], function () {
-    Route::post('{id}', [MessageController::class, 'store']);
-    Route::put('{id}', [MessageController::class, 'update']);
+    Route::apiResource('', MessageController::class);
     Route::get('{id}', [MessageController::class, 'Messages']);
-    Route::delete('{id}', [MessageController::class, 'destroy']);
 });
-// Route::group([
-//     'prefix' => 'blog'
-// ], function ($router) {
-//     Route::get('', [BlogController::class, 'index']);
-//     Route::post('', [BlogController::class, 'store']);
-//     Route::get('{id}', [BlogController::class, 'show']);
-//     Route::put('{id}', [BlogController::class, 'update']);
-// });
-Route::resources([
-    'blog'    => BlogController::class,
-    'category'=> CategoryController::class,
-    'book'    => BookController::class,
-    'comment' => AdminCommentController::class,
-]);
+
+Route::group(['prefix'=>'blog'], function () {
+    Route::apiResource('', BlogController::class);
+});
+
+Route::group(['prefix'=>'category'], function () {
+    Route::apiResource('', CategoryController::class);
+});
+
+Route::group(['prefix'=>'book'], function () {
+    Route::apiResource('', BookController::class);
+});
 
 Route::group([
     'prefix' => 'home'
