@@ -29,7 +29,7 @@ class QuotesController extends Controller
     *
     * Get random quote
     */
-    public function quote()
+    public function index()
     {
         $randomQuote = Quotes::inRandomOrder()->first();
         return $this->success($randomQuote);
@@ -153,12 +153,12 @@ class QuotesController extends Controller
 
     /**
        * @OA\Delete(
-       *     path="/quote/{id}",
+       *     path="/quote/{quote}",
        *     tags={"Quotes"},
        *     summary="DeleteOneItem",
        *     description="Delete one Item",
        *     @OA\Parameter(
-       *         name="id",
+       *         name="quote",
        *         in="path",
        *         required=true,
        *         @OA\Schema(
@@ -178,10 +178,10 @@ class QuotesController extends Controller
        * )
         * Remove the specified resource from storage.
         */
-    public function destroy(int $id)
+    public function destroy(int $quote)
     {
         try {
-            $quote = Quotes::findOrFail($id);
+            $quote = Quotes::findOrFail($quote);
             $quote->delete();
             $id = $quote->id;
             return $this->success("quote $id deleted");

@@ -9,56 +9,56 @@ use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
 /**
-* @OA\Schema(
-*     schema="UserModel",
-*     title="User Model",
-*     description="Represents a user",
-*     @OA\Property(
-*         property="id",
-*         type="integer",
-*         format="int32",
-*         description="user ID"
-*     ),
-*     @OA\Property(
-*         property="first_name",
-*         type="string",
-*         description="first_name"
-*     ),
-*     @OA\Property(
-*         property="last_name",
-*         type="string",
-*         description="last name"
-*     ),
-*     @OA\Property(
-*         property="email",
-*         type="string",
-*         description="email"
-*     ),
-*     @OA\Property(
-*         property="email_verified_at",
-*         type="string",
-*         format="date-time",
-*         description="email verified date"
-*     ),
-*     @OA\Property(
-*         property="is_admin",
-*         type="boolean",
-*         description="user role"
-*     ),
-*     @OA\Property(
-*         property="created_at",
-*         type="string",
-*         format="date-time",
-*         description="created date"
-*     ),
-*     @OA\Property(
-*         property="updated_at",
-*         type="string",
-*         format="date-time",
-*         description="updated date"
-*     ),
-* )
-*/
+ * @OA\Schema(
+ *     schema="UserModel",
+ *     title="User Model",
+ *     description="Represents a user",
+ *     @OA\Property(
+ *         property="id",
+ *         type="integer",
+ *         format="int32",
+ *         description="user ID"
+ *     ),
+ *     @OA\Property(
+ *         property="first_name",
+ *         type="string",
+ *         description="first_name"
+ *     ),
+ *     @OA\Property(
+ *         property="last_name",
+ *         type="string",
+ *         description="last name"
+ *     ),
+ *     @OA\Property(
+ *         property="email",
+ *         type="string",
+ *         description="email"
+ *     ),
+ *     @OA\Property(
+ *         property="email_verified_at",
+ *         type="string",
+ *         format="date-time",
+ *         description="email verified date"
+ *     ),
+ *     @OA\Property(
+ *         property="is_admin",
+ *         type="boolean",
+ *         description="user role"
+ *     ),
+ *     @OA\Property(
+ *         property="created_at",
+ *         type="string",
+ *         format="date-time",
+ *         description="created date"
+ *     ),
+ *     @OA\Property(
+ *         property="updated_at",
+ *         type="string",
+ *         format="date-time",
+ *         description="updated date"
+ *     ),
+ * )
+ */
 class User extends Authenticatable implements JWTSubject
 {
     use HasFactory;
@@ -124,8 +124,13 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Ticket::class);
     }
 
-    public function message()
+    public function messages()
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function books()
+    {
+        return $this->hasMany(Book::class);
     }
 }
