@@ -157,6 +157,84 @@ class TicketController extends Controller implements HasMiddleware
 
     /**
      * @OA\Get(
+     *     path="/admin/ticket/{id}/user",
+     *     tags={"AdminTicket"},
+     *     summary="getUserItem",
+     *     description="get User Item",
+     *     @OA\Parameter(
+     *         name="id",
+     *         description="ticket id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success Message",
+     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="an ""unexpected"" error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),security={{"api_key": {}}}
+     * )
+     * show ticket message for admin.
+     */
+    public function user(int $id)
+    {
+        try {
+            $user_ticket = Ticket::with('user')->findOrFail($id);
+            return $this->success($user_ticket);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('cannot get user');
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/admin/ticket/{id}/messages",
+     *     tags={"AdminTicket"},
+     *     summary="getMessagesItem",
+     *     description="get Messages Item",
+     *     @OA\Parameter(
+     *         name="id",
+     *         description="ticket id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success Message",
+     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="an ""unexpected"" error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),security={{"api_key": {}}}
+     * )
+     * show ticket message for admin.
+     */
+    public function messages(int $id)
+    {
+        try {
+            $messages_ticket = Ticket::with('messages')->findOrFail($id);
+            return $this->success($messages_ticket);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('cannot get messages');
+        }
+    }
+
+    /**
+     * @OA\Get(
      *     path="/admin/ticket/open",
      *     tags={"AdminTicket"},
      *     summary="getOpenItem",

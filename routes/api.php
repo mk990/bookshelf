@@ -21,35 +21,61 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'prefix' => 'admin'
 ], function ($router) {
+    Route::apiResource('user', UserController::class, [
+        'parameters'=> [
+            'user'=> 'id'
+        ]
+    ]);
     Route::group([
         'prefix' => 'user'
     ], function ($router) {
-        Route::apiResource('', UserController::class);
+        Route::get('/{id}/books', [UserController::class, 'books']);
+        Route::get('/{id}/tickets', [UserController::class, 'tickets']);
+        Route::get('/{id}/messages', [UserController::class, 'messages']);
     });
+
+    Route::apiResource('book', AdminBookController::class, [
+        'parameters'=> [
+            'book'=> 'id'
+        ]
+    ]);
     Route::group([
         'prefix' => 'book'
     ], function ($router) {
-        Route::apiResource('', AdminBookController::class);
         Route::post('{id}/picture', [AdminBookController::class, 'upload']);
         Route::get('unConfirmed', [AdminBookController::class, 'unConfirmed']);
         Route::put('verify/{id}', [AdminBookController::class, 'verifyBook']);
     });
+
+    Route::apiResource('comment', AdminCommentController::class, [
+        'parameters'=> [
+            'comment'=> 'id'
+        ]
+    ]);
     Route::group([
         'prefix' => 'comment'
     ], function ($router) {
-        Route::apiResource('', AdminCommentController::class);
     });
+
     Route::group([
         'prefix' => 'ticket'
     ], function ($router) {
-        Route::apiResource('', AdminTicketController::class);
+        Route::get('', [AdminTicketController::class, 'index']);
         Route::get('open', [AdminTicketController::class, 'open']);
         Route::get('close', [AdminTicketController::class, 'closedTicket']);
+        Route::get('{id}', [AdminTicketController::class, 'show']);
+        Route::delete('{id}', [AdminTicketController::class, 'destroy']);
+        Route::get('/{id}/messages', [AdminTicketController::class, 'messages']);
+        Route::get('/{id}/user', [AdminTicketController::class, 'user']);
     });
+
     Route::group(['prefix'=>'messages'], function () {
-        Route::apiResource('', AdminTicketController::class);
+        Route::post('{id}', [AdminMessageController::class, 'store']);
+        Route::put('{id}', [AdminMessageController::class, 'update']);
         Route::get('{id}', [AdminMessageController::class, 'Messages']);
         Route::delete('{id}', [AdminMessageController::class, 'destroy']);
+        Route::get('/{id}/ticket', [AdminMessageController::class, 'ticket']);
+        Route::get('/{id}/user', [AdminMessageController::class, 'user']);
     });
 });
 
@@ -69,27 +95,39 @@ Route::group([
     Route::post('forgotPassword/{token}', [AuthController::class, 'setForgotPassword'])->name('change-password');
 });
 
+Route::apiResource('quote', QuotesController::class, [
+    'parameters'=> [
+        'quote'=> 'id'
+    ]
+]);
 Route::group([
     'prefix' => 'quote'
 ], function ($router) {
-    Route::apiResource('', QuotesController::class);
 });
 
 Route::get('test', [ExampleController::class, 'test']);
 Route::get('test1', [ExampleController::class, 'test1']);
 Route::post('contact-us', [ContactUsController::class, 'contact']);
 
+Route::apiResource('comment', CommentController::class, [
+    'parameters'=> [
+        'comment'=> 'id'
+    ]
+]);
 Route::group([
     'prefix' => 'comment'
 ], function ($router) {
-    Route::apiResource('', CommentController::class);
     Route::get('top', [CommentController::class, 'topComments']);
 });
 
+Route::apiResource('ticket', TicketController::class, [
+    'parameters'=> [
+        'ticket'=> 'id'
+    ]
+]);
 Route::group([
     'prefix' => 'ticket'
 ], function ($router) {
-    Route::apiResource('', TicketController::class);
     Route::get('open', [TicketController::class, 'open']);
     Route::get('close', [TicketController::class, 'closedTicket']);
     Route::post('{id}/close', [TicketController::class, 'closeTicket']);
@@ -98,20 +136,34 @@ Route::group([
 Route::group([
     'prefix' => 'messages'
 ], function () {
-    Route::apiResource('', MessageController::class);
+    Route::post('{id}', [MessageController::class, 'store']);
+    Route::put('{id}', [MessageController::class, 'update']);
     Route::get('{id}', [MessageController::class, 'Messages']);
+    Route::delete('{id}', [MessageController::class, 'destroy']);
 });
 
+Route::apiResource('blog', BlogController::class, [
+    'parameters'=> [
+        'blog'=> 'id'
+    ]
+]);
 Route::group(['prefix'=>'blog'], function () {
-    Route::apiResource('', BlogController::class);
 });
 
+Route::apiResource('category', CategoryController::class, [
+    'parameters'=> [
+        'category'=> 'id'
+    ]
+]);
 Route::group(['prefix'=>'category'], function () {
-    Route::apiResource('', CategoryController::class);
 });
 
+Route::apiResource('book', BookController::class, [
+    'parameters'=> [
+        'book'=> 'id'
+    ]
+]);
 Route::group(['prefix'=>'book'], function () {
-    Route::apiResource('', BookController::class);
 });
 
 Route::group([

@@ -114,7 +114,7 @@ class BookController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        return $this->success(Book::latest()->whereIsVerified(1)->paginate(20));
+        return $this->success(Book::latest()->whereVerified(1)->paginate(20));
     }
 
     /**

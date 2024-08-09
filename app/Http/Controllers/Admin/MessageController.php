@@ -64,6 +64,84 @@ class MessageController extends Controller implements HasMiddleware
     }
 
     /**
+     * @OA\Get(
+     *     path="/admin/messages/{id}/ticket",
+     *     tags={"AdminMessages"},
+     *     summary="getAllItem",
+     *     description="get All Item",
+     *     @OA\Parameter(
+     *         name="id",
+     *         description="Message id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success Message",
+     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="an ""unexpected"" error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),security={{"api_key": {}}}
+     * )
+     * show ticket message for admin.
+     */
+    public function ticket(int $id)
+    {
+        try {
+            $ticket_message = Message::with('ticket')->findOrFail($id);
+            return $this->success($ticket_message);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('cannot get ticket');
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/admin/messages/{id}/user",
+     *     tags={"AdminMessages"},
+     *     summary="getUserItem",
+     *     description="get User Item",
+     *     @OA\Parameter(
+     *         name="id",
+     *         description="message id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success Message",
+     *         @OA\JsonContent(ref="#/components/schemas/TicketModel"),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="an ""unexpected"" error",
+     *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+     *     ),security={{"api_key": {}}}
+     * )
+     * show ticket message for admin.
+     */
+    public function user(int $id)
+    {
+        try {
+            $user_message = Message::with('user')->findOrFail($id);
+            return $this->success($user_message);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error('cannot get ticket');
+        }
+    }
+
+    /**
      * @OA\Post(
      *     path="/admin/messages/{id}",
      *     tags={"AdminMessages"},
@@ -174,7 +252,7 @@ class MessageController extends Controller implements HasMiddleware
             $message->update([
                 'message'     => $request->message,
             ]);
-             return $this->success($message);
+            return $this->success($message);
         } catch (Exception $e) {
             Log::error($e->getMessage());
             return $this->error('Message not updated');
