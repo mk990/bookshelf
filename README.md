@@ -35,7 +35,7 @@ cp .env.example .env
 php artisan sqlite:generate
 php artisan key:generate
 php artisan jwt:secret
-run: php artisan migrate 
+php artisan migrate 
 ```
 
 ### Run project
@@ -56,6 +56,6 @@ If you have done the above steps and have a problem, send a message.
 
 ### developed by
 
-- [**mohammad hemmati](https://github.com/mk990)
-- [**Emad shirzad](https://github.com/Emadshirzad)
-- [**Mehdi Abedi](https://github.com/mehdiabedimehr)
+- **[mohammad hemmati](https://github.com/mk990)**
+- **[Emad shirzad](https://github.com/Emadshirzad)**
+- **[Mehdi Abedi](https://github.com/mehdiabedimehr)**
