@@ -14,6 +14,7 @@ return new class () extends Migration {
             $table->id();
             $table->string('name');
             $table->text('quotation');
+            $table->boolean('verified')->default(false);
             $table->timestamps();
         });
     }
