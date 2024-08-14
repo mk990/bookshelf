@@ -18,6 +18,7 @@ class BlogController extends Controller implements HasMiddleware
             new Middleware('auth.admin'),
         ];
     }
+
     /**
      * @OA\Get(
      *     path="/admin/blog",
@@ -116,6 +117,7 @@ class BlogController extends Controller implements HasMiddleware
     {
         return $this->success(Blog::latest()->whereIsVerified(1)->paginate(20));
     }
+
     /**
      * @OA\Post(
      *     path="/admin/blog",
@@ -161,7 +163,6 @@ class BlogController extends Controller implements HasMiddleware
      * )
      * Make a blog
      */
-    //fixme bugs
     public function store(Request $request)
     {
         $request->validate([
@@ -169,7 +170,7 @@ class BlogController extends Controller implements HasMiddleware
             'description'    => 'required',
             'article'        => 'required'
         ]);
- 
+
         try {
             $blog = Blog::create($request->all());
             return $this->success($blog);
@@ -178,6 +179,7 @@ class BlogController extends Controller implements HasMiddleware
             return $this->error('Book not created');
         }
     }
+
     /**
      * @OA\Post(
      *     path="/admin/blog/{id}/picture",
@@ -230,7 +232,7 @@ class BlogController extends Controller implements HasMiddleware
         try {
             $blog = Blog::findOrFail($id);
             $image = $request->picture;
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imageName = time() . '-' . str()->random(32) . '.' . $image->getClientOriginalExtension();
             $image->storeAs('public/blogs', $imageName);
             $blog->picture = $imageName;
             $blog->save();
@@ -239,6 +241,7 @@ class BlogController extends Controller implements HasMiddleware
             Log::error($e->getMessage());
         }        return $this->error('image dont upload');
     }
+
     /**
      * @OA\Get(
      *     path="/admin/blog/{id}",
@@ -276,6 +279,7 @@ class BlogController extends Controller implements HasMiddleware
             return response()->json(['error' => 'article not found'], 400);
         }
     }
+
     /**
      * @OA\Put(
      *     path="/admin/blog/{id}",
@@ -332,9 +336,9 @@ class BlogController extends Controller implements HasMiddleware
     public function update(Request $request, Int $id)
     {
         $request->validate([
-            'title'   => 'required',
+            'title'        => 'required',
             'description'  => 'required',
-            'article'   => 'required',
+            'article'      => 'required',
         ]);
 
         try {
@@ -346,6 +350,7 @@ class BlogController extends Controller implements HasMiddleware
             return response()->json(['error' => 'article dont update'], 400);
         }
     }
+
     /**
      * @OA\Delete(
      *     path="/admin/blog/{id}",
@@ -385,6 +390,7 @@ class BlogController extends Controller implements HasMiddleware
             return response()->json(['error' => 'article not deleted'], 400);
         }
     }
+
     /**
      * @OA\Get(
      *     path="/admin/blog/unConfirmed",
@@ -408,7 +414,7 @@ class BlogController extends Controller implements HasMiddleware
     {
         return $this->success(Blog::whereVerified(0)->get());
     }
- 
+
     /**
      * @OA\Put(
      *     path="/admin/blog/verify/{id}",

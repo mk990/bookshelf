@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\BookController as AdminBookController;
-use App\Http\Controllers\Admin\BookController as AdminBlogController;
+use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\MessageController as AdminMessageController;
 use App\Http\Controllers\Admin\TicketController as AdminTicketController;
@@ -47,6 +47,7 @@ Route::group([
         Route::get('unConfirmed', [AdminBookController::class, 'unConfirmed']);
         Route::put('verify/{id}', [AdminBookController::class, 'verifyBook']);
     });
+
     Route::apiResource('blog', AdminBlogController::class, [
         'parameters'=> [
             'blog'=> 'id'
