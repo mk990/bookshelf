@@ -78,4 +78,9 @@ class Book extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function bookUser()
+    {
+        return $this->hasOne(book_user::class);
+    }
 }
