@@ -417,7 +417,7 @@ class BlogController extends Controller implements HasMiddleware
 
     /**
      * @OA\Put(
-     *     path="/admin/blog/verify/{id}",
+     *     path="/admin/blog/{id}/verify",
      *     tags={"Admin Blog"},
      *     summary="VerifyOneItem",
      *     description="Verify one Item",

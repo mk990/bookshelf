@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
+use App\Http\Controllers\Admin\QuotesController as AdminQuotesController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
 use App\Http\Controllers\Admin\MessageController as AdminMessageController;
 use App\Http\Controllers\Admin\TicketController as AdminTicketController;
@@ -45,7 +46,7 @@ Route::group([
     ], function ($router) {
         Route::post('{id}/picture', [AdminBookController::class, 'upload']);
         Route::get('unConfirmed', [AdminBookController::class, 'unConfirmed']);
-        Route::put('verify/{id}', [AdminBookController::class, 'verifyBook']);
+        Route::put('{id}/verify', [AdminBookController::class, 'verifyBook']);
     });
 
     Route::apiResource('blog', AdminBlogController::class, [
@@ -58,7 +59,17 @@ Route::group([
     ], function ($router) {
         Route::post('{id}/picture', [AdminBlogController::class, 'upload']);
         Route::get('unConfirmed', [AdminBlogController::class, 'unConfirmed']);
-        Route::put('verify/{id}', [AdminBlogController::class, 'verifyBlog']);
+        Route::put('{id}/verify', [AdminBlogController::class, 'verifyBlog']);
+    });
+
+    Route::apiResource('quote', AdminQuotesController::class, [
+        'parameters'=> [
+            'quote'=> 'id'
+        ]
+    ]);
+    Route::group([
+        'prefix' => 'quote'
+    ], function ($router) {
     });
 
     Route::apiResource('comment', AdminCommentController::class, [

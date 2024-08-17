@@ -418,7 +418,7 @@ class BookController extends Controller implements HasMiddleware
 
     /**
      * @OA\Put(
-     *     path="/admin/book/verify/{id}",
+     *     path="/admin/book/{id}/verify",
      *     tags={"Admin Book"},
      *     summary="VerifyOneItem",
      *     description="Verify one Item",
