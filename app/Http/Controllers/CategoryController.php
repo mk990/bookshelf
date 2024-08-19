@@ -167,6 +167,68 @@ class CategoryController extends Controller implements HasMiddleware
     }
 
     /**
+       * @OA\Post(
+       *     path="/category/{id}/picture",
+       *     tags={"Category"},
+       *     summary="MakeOneItem",
+       *     description="make one Item",
+       *     @OA\Parameter(
+       *         name="id",
+       *         in="path",
+       *         required=true,
+       *         @OA\Schema(
+       *             type="integer"
+       *         )
+       *     ),
+       *     @OA\RequestBody(
+       *         description="tasks input",
+       *         required=true,
+       *         @OA\MediaType(
+       *             mediaType="multipart/form-data",
+       *             @OA\Schema(
+       *                 @OA\Property(
+       *                     property="picture",
+       *                     description="Item",
+       *                     type="file",
+       *                     format="file"
+       *                 )
+       *             )
+       *         )
+       *     ),
+       *     @OA\Response(
+       *         response=200,
+       *         description="Success Message",
+       *         @OA\JsonContent(ref="#/components/schemas/SuccessModel"),
+       *     ),
+       *     @OA\Response(
+       *         response=400,
+       *         description="an 'unexpected' error",
+       *         @OA\JsonContent(ref="#/components/schemas/ErrorModel"),
+       *     ),
+       *     security={{"api_key": {}}}
+       * )
+       * upload image book
+       */
+    public function upload(Request $request, int $id)
+    {
+        $request->validate([
+            'picture' => 'required|file|image',
+        ]);
+
+        try {
+            $category = category::findOrFail($id);
+            $image = $request->picture;
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->storeAs('public/categiries', $imageName);
+            $category->picture = $imageName;
+            $category->save();
+            return $this->success(['image uploaded successfully']);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+        }        return $this->error('image dont upload');
+    }
+
+    /**
      * @OA\Get(
      *     path="/category/{id}",
      *     tags={"Category"},
