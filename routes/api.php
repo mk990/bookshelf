@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\QuotesController as AdminQuotesController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
+use App\Http\Controllers\Admin\ContactUsController ;
 use App\Http\Controllers\Admin\MessageController as AdminMessageController;
 use App\Http\Controllers\Admin\TicketController as AdminTicketController;
 use App\Http\Controllers\Admin\UserController;
@@ -12,7 +13,6 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\ContactUsController;
 use App\Http\Controllers\ExampleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MessageController;
@@ -28,6 +28,7 @@ Route::group([
             'user'=> 'id'
         ]
     ]);
+    Route::post('contact-us', [ContactUsController::class, 'contact']);
     Route::group([
         'prefix' => 'user'
     ], function ($router) {
@@ -132,7 +133,6 @@ Route::group([
 
 Route::get('test', [ExampleController::class, 'test']);
 Route::get('test1', [ExampleController::class, 'test1']);
-Route::post('contact-us', [ContactUsController::class, 'contact']);
 
 Route::apiResource('comment', CommentController::class, [
     'parameters'=> [
@@ -181,6 +181,7 @@ Route::apiResource('category', CategoryController::class, [
     ]
 ]);
 Route::group(['prefix'=>'category'], function () {
+    Route::post('{id}/picture', [CategoryController::class, 'upload']);
 });
 
 Route::apiResource('book', BookController::class, [
@@ -189,6 +190,7 @@ Route::apiResource('book', BookController::class, [
     ]
 ]);
 Route::group(['prefix'=>'book'], function () {
+    Route::post('{id}/picture', [BookController::class, 'upload']);
 });
 
 Route::group([
