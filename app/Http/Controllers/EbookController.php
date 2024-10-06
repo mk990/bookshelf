@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pdf;
+use App\Models\Ebook;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class PdfController extends Controller
+class EbookController extends Controller
 {
     /**
       * @OA\Post(
-      *     path="/pdf",
-      *     tags={"Pdf"},
+      *     path="/ebook",
+      *     tags={"Ebook"},
       *     summary="MakeOneItem",
       *     description="make one Item",
       *     @OA\RequestBody(
@@ -30,7 +30,7 @@ class PdfController extends Controller
       *     @OA\Response(
       *         response=200,
       *         description="Success Message",
-      *         @OA\JsonContent(ref="#/components/schemas/PdfModel"),
+      *         @OA\JsonContent(ref="#/components/schemas/EbookModel"),
       *     ),
       *     @OA\Response(
       *         response=400,
@@ -43,11 +43,12 @@ class PdfController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
-            'type'   => 'required|string|max:255',
+            'type'         => 'required|string|max:255',
+            'release_date' => 'nullable|date',
         ]);
 
         try {
-            $pdf = Pdf::create($request->all());
+            $pdf = Ebook::create($request->all());
             return $this->success($pdf);
         } catch(Exception $e) {
             Log::error($e->getMessage());
@@ -57,8 +58,8 @@ class PdfController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/pdf/{id}",
-     *     tags={"Pdf"},
+     *     path="/ebook/{id}",
+     *     tags={"Ebook"},
      *     summary="MakeOneItem",
      *     description="make one Item",
      *     @OA\Parameter(
@@ -76,7 +77,7 @@ class PdfController extends Controller
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
      *                 @OA\Property(
-     *                     property="pdf",
+     *                     property="file",
      *                     description="Item",
      *                     type="file",
      *                     format="file"
@@ -98,18 +99,18 @@ class PdfController extends Controller
      * )
      * upload image blog
      */
-    public function upload_file(Request $request, int $id)
+    public function uploadFile(Request $request, int $id)
     {
         $request->validate([
-            'pdf' => 'required|file|mimes:pdf',
+            'file' => 'required|file|mimes:pdf',
         ]);
 
         try {
-            $blog = Pdf::findOrFail($id);
-            $pdf = $request->pdf;
-            $pdfName = time() . '-' . str()->random(32) . '.' . $pdf->getClientOriginalExtension();
-            $pdf->storeAs('public/pdf', $pdfName);
-            $blog->pdf = $pdfName;
+            $blog = Ebook::findOrFail($id);
+            $Ebook = $request->file;
+            $ebookName = time() . '-' . str()->random(32) . '.' . $Ebook->getClientOriginalExtension();
+            $Ebook->storeAs('public/ebook', $ebookName);
+            $blog->ebook = $ebookName;
             $blog->save();
             return $this->success(['PDF uploaded successfully']);
         } catch (Exception $e) {
