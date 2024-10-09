@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\LanguageMiddleware;
 use App\Http\Middleware\UserIdMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             '*'
         ]);
+        $middleware->append(LanguageMiddleware::class);
         $middleware->append(UserIdMiddleware::class);
         $middleware->alias([
             'auth.admin' => AdminMiddleware::class,

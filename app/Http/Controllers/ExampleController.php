@@ -33,11 +33,11 @@ class ExampleController extends Controller
      */
     public function test()
     {
-        return $this->success(['message'=>'hello world']);
+        return $this->success(['message'=>__('message')]);
     }
 
     public function test1()
     {
-        return $this->error('hello world');
+        return $this->error(__('message'));
     }
 }
