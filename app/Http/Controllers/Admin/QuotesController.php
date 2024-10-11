@@ -85,7 +85,7 @@ class QuotesController extends Controller
             return $this->success($quote);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            $this->error('message not created');
+            return $this->error(__('messages.QuoteNotCreate'));
         }
     }
 
@@ -147,7 +147,7 @@ class QuotesController extends Controller
             return $this->success($quote);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            $this->error('message not updated');
+            return $this->error(__('messages.QuoteNotUpdate'));
         }
     }
 
@@ -187,7 +187,7 @@ class QuotesController extends Controller
             return $this->success("quote $id deleted");
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Quote not deleted');
+            return $this->error(__('messages.QuoteNotDelete'));
         }
     }
 }

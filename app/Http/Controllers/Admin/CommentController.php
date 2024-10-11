@@ -184,7 +184,7 @@ class CommentController extends Controller implements HasMiddleware
             return $this->success($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Book not created');
+            return $this->error(__('messages.CommentDontSend'));
         }
     }
 
@@ -222,7 +222,7 @@ class CommentController extends Controller implements HasMiddleware
             return $this->success($comment);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Book not found');
+            return $this->error(__('messages.CommentNotFound'));
         }
     }
 
@@ -298,14 +298,14 @@ class CommentController extends Controller implements HasMiddleware
         try {
             $book = Comment::findOrFail($id);
             if ($book->user_id !== auth()->id() || $book->verified == 1) {
-                return $this->error('forbidden', status:403);
+                return $this->error(__('messages.Forbidden'), status:403);
             }
 
             $book->update($request->all());
             return response()->json($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not created'], 400);
+            return response()->json(['error' => __('messages.CommentNotUpdate')], 400);
         }
     }
 
@@ -345,7 +345,7 @@ class CommentController extends Controller implements HasMiddleware
             return response()->json("comment $id deleted");
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not deleted'], 400);
+            return response()->json(['error' => __('messages.CommentNotDelete')], 400);
         }
     }
 }

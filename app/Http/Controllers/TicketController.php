@@ -173,7 +173,7 @@ class TicketController extends Controller implements HasMiddleware
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Ticket not created');
+            return $this->error(__('messages.TicketNotSend'));
         }
     }
 
@@ -209,12 +209,12 @@ class TicketController extends Controller implements HasMiddleware
         try {
             $ticket = Ticket::findOrFail($id);
             if ($ticket->user_id !== auth()->id()) {
-                return $this->error('forbidden', status: 403);
+                return $this->error(__('messages.Forbidden'), status:403);
             }
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Ticket not found');
+            return $this->error(__('messages.TicketNotFound'));
         }
     }
 
@@ -244,7 +244,7 @@ class TicketController extends Controller implements HasMiddleware
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Ticket not found');
+            return $this->error(__('messages.TicketNotFound'));
         }
     }
 
@@ -274,7 +274,7 @@ class TicketController extends Controller implements HasMiddleware
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Ticket not found');
+            return $this->error(__('messages.TicketNotFound'));
         }
     }
 
@@ -310,14 +310,14 @@ class TicketController extends Controller implements HasMiddleware
         try {
             $ticket = Ticket::findOrFail($id);
             if ($ticket->user_id !== auth()->id()) {
-                return $this->error('forbidden', status: 403);
+                return $this->error(__('messages.Forbidden'), status:403);
             }
             $ticket->open = false;
             $ticket->save();
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Ticket not updated');
+            return $this->error(__('messages.TicketNotUpdated'));
         }
     }
 }

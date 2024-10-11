@@ -177,7 +177,7 @@ class BookController extends Controller implements HasMiddleware
             return $this->success($book);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-        }        return $this->error('Book not created');
+        }    return $this->error(__('messages.BookNotCreated'));
     }
 
     /**
@@ -239,7 +239,7 @@ class BookController extends Controller implements HasMiddleware
             return $this->success(['image uploaded successfully']);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-        }        return $this->error('Book not created');
+        }   return $this->error(__('messages.ImageDontUpload'));
     }
 
     /**
@@ -276,7 +276,7 @@ class BookController extends Controller implements HasMiddleware
             return response()->json($book);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not found'], 400);
+            return $this->error(__('messages.BookNotFound'));
         }
     }
 
@@ -348,7 +348,7 @@ class BookController extends Controller implements HasMiddleware
             return response()->json($book);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not created'], 400);
+            return response()->json(['error' => __('messages.BookNotUpdate')], 403);
         }
     }
 
@@ -388,7 +388,7 @@ class BookController extends Controller implements HasMiddleware
             return response()->json("book $id deleted");
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not deleted'], 400);
+            return response()->json(['error' => __('messages.BookNotDelete')], 403);
         }
     }
 
@@ -452,7 +452,7 @@ class BookController extends Controller implements HasMiddleware
             return response()->json(["book $id verified"]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not verified'], 400);
+            return $this->error(__('messages.BookNotVerify'));
         }
     }
 }

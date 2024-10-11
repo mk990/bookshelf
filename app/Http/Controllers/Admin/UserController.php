@@ -152,7 +152,7 @@ class UserController extends Controller implements HasMiddleware
             return response()->json($user);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not found'], 400);
+            return $this->error(__('messages.UserNotFound'));
         }
     }
 
@@ -229,7 +229,7 @@ class UserController extends Controller implements HasMiddleware
             return response()->json($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not created'], 400);
+            return $this->error(__('messages.UserNotCreated'));
         }
     }
 
@@ -269,7 +269,7 @@ class UserController extends Controller implements HasMiddleware
             return response()->json("User $id deleted");
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not deleted'], 400);
+            return $this->error(__('messages.UserNotDelete'));
         }
     }
 
@@ -308,7 +308,7 @@ class UserController extends Controller implements HasMiddleware
             return $this->success($user_book);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('cannot get books');
+            return $this->error(__('messages.CanNotGetBook'));
         }
     }
 
@@ -347,7 +347,7 @@ class UserController extends Controller implements HasMiddleware
             return $this->success($user_ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('cannot get tickets');
+            return $this->error(__('messages.TicketNotGet'));
         }
     }
 
@@ -386,7 +386,7 @@ class UserController extends Controller implements HasMiddleware
             return $this->success($user_message);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('cannot get messages');
+            return $this->error(__('messages.canNotGetMessage'));
         }
     }
 }

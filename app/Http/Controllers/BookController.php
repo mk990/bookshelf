@@ -176,7 +176,7 @@ class BookController extends Controller implements HasMiddleware
             return $this->success($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Book not created');
+            return $this->error(__('messages.BookNotCreated'));
         }
     }
 
@@ -212,12 +212,12 @@ class BookController extends Controller implements HasMiddleware
         try {
             $book = Book::findOrFail($id);
             if ($book->user_id !== auth()->id() && $book->verified == 0) {
-                return $this->error('forbidden', status:403);
+                return $this->error(__('messages.ForbiddenBook'), status:403);
             }
             return $this->success($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Book not found');
+            return $this->error(__('messages.BookNotFound'));
         }
     }
 
@@ -286,14 +286,14 @@ class BookController extends Controller implements HasMiddleware
         try {
             $book = Book::findOrFail($id);
             if ($book->user_id !== auth()->id() || $book->verified == 1) {
-                return $this->error('forbidden', status:403);
+                return $this->error(__('messages.ForbiddenBook'), status:403);
             }
 
             $book->update($request->all());
             return response()->json($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not created'], 400);
+            return response()->json(['error' => __('messages.BookNotUpdate')], 403);
         }
     }
 
@@ -329,7 +329,7 @@ class BookController extends Controller implements HasMiddleware
         try {
             $book = Book::findOrFail($id);
             if ($book->user_id !== auth()->id() || $book->verified == 1) {
-                return $this->error('forbidden', status:403);
+                return $this->error(__('messages.ForbiddenBook'), status:403);
             }
 
             $book->delete();
@@ -337,7 +337,7 @@ class BookController extends Controller implements HasMiddleware
             return response()->json("book $id deleted");
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not deleted'], 400);
+            return response()->json(['error' => __('messages.BookNotDelete')], 403);
         }
     }
 }

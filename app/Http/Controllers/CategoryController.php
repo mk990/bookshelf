@@ -201,7 +201,7 @@ class CategoryController extends Controller implements HasMiddleware
             return $this->success($book);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('category not found');
+            return $this->error(__('messages.CategoryNotFound'));
         }
     }
 
@@ -265,7 +265,7 @@ class CategoryController extends Controller implements HasMiddleware
             return response()->json($category);
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'category not update'], 400);
+            return response()->json(['error' => __('messages.CategoryNotUpdate')], 400);
         }
     }
 
@@ -305,7 +305,7 @@ class CategoryController extends Controller implements HasMiddleware
             return response()->json("category $id deleted");
         } catch(Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'category not deleted'], 400);
+            return response()->json(['error' => __('messages.CategoryNotDelete')], 400);
         }
     }
 }
