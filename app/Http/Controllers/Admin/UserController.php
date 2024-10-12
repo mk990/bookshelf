@@ -150,9 +150,9 @@ class UserController extends Controller implements HasMiddleware
         try {
             $user = User::findOrFail($id);
             return response()->json($user);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.UserNotFound'));
+            return $this->error(__('messages.user.notFound'));
         }
     }
 
@@ -227,9 +227,9 @@ class UserController extends Controller implements HasMiddleware
             $book = User::findOrFail($id);
             $book->update($request->all());
             return response()->json($book);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.UserNotCreated'));
+            return $this->error(__('messages.user.notCreated'));
         }
     }
 
@@ -267,9 +267,9 @@ class UserController extends Controller implements HasMiddleware
             $book->delete();
             $id = $book->id;
             return response()->json("User $id deleted");
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.UserNotDelete'));
+            return $this->error(__('messages.user.notDelete'));
         }
     }
 
@@ -308,7 +308,7 @@ class UserController extends Controller implements HasMiddleware
             return $this->success($user_book);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.CanNotGetBook'));
+            return $this->error(__('messages.user.canNotGetBook'));
         }
     }
 
@@ -347,7 +347,7 @@ class UserController extends Controller implements HasMiddleware
             return $this->success($user_ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.TicketNotGet'));
+            return $this->error(__('messages.user.ticketNotGet'));
         }
     }
 
@@ -386,7 +386,7 @@ class UserController extends Controller implements HasMiddleware
             return $this->success($user_message);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.canNotGetMessage'));
+            return $this->error(__('messages.message.notGet'));
         }
     }
 }

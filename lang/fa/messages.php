@@ -1,57 +1,72 @@
 <?php
 
 return [
-    'BlogNotCreated'     => 'مقاله ثبت نشد',
-    'Forbidden'=>'اجازه دیدن مقاله را ندارید',
-    'ContentNotFound'=>'مقاله پیدا نشد',
-    'contentnotUpdated'=>'مقاله آپدیت نشد',
-    'EbookNotCreated'=>'کتاب ساخته  نشد',
-    'EbookDontUpload'=>'کتاب آپلود  نشد',
-    'BookNotCreated'=>'کتاب ساخته  نشد',
-    'ForbiddenBook'=>'اجازه دیدن کتاب را ندارید',
-    'BookNotFound'=>'کتاب پیدا نشد',
-    'BookNotUpdate'=>'کتاب آپدیت نشد',
-    'BookNotDelete'=>'کتاب پاک نشد',
-    'CategoryNotFound'=>'دسته بندی یافت نشد',
-    'CategoryNotUpdate'=>'دسته بندی آپدیت نشد',
-    'CategoryNotDelete'=>'دسته بندی پاک نشد',
-    'CommentDontSend'=>'نظر ارسال نشد   ',
-    'CommentNotFound'=>'نظر یافت نشد   ',
-    'CommentNotUpdate'=>'نظر آپدیت نشد   ',
-    'CommentNotDelete'=>'نظر پاک نشد   ',
-    'CommentNotDelete'=>'نظر پاک نشد   ',
-    'MessageNotFound'=>'   مسیج یافت نشد  ',
-    'MassegeNotCreate'=>'   مسیج ثبت نشد  ',
-    'MessageNotUpdate'=>'   مسیج آپدیت نشد  ',
-    'MessageNotDelete'=>'   مسیج پاک نشد  ',
-    'QuoteNotCreate'=>'   نقل قول ثبت نشد    ',
-    'QuoteNotUpdate'=>'   نقل قول آپدیت نشد    ',
-    'QuoteNotDelete'=>'   نقل قول پاک نشد    ',
-    'TicketNotSend'=>'   تیکت ارسال نشد',
-    'TicketNotFound'=>'   تیکت پیدا نشد',
-    'TicketNotUpdated'=>'   تیکت آپدیت نشد',
-    'ImageDontUpload'=>'   عکس آپلود  نشد',
-    'ArticleNotDeleted'=>'   مقاله پاک  نشد',
-    'BlogNotVerify'=>'   مقاله وریفای  نشد',
-    'BookNotVerify'=>'   کتاب وریفای  نشد',
-    'CommentNotFound'=>'   کامنت پیدا   نشد',
-    'TicketNotGet'=>'    تیکت دریافت   نشد',
-    'CannotGetUser'=>'    کاربر دریافت   نشد',
-    'CannotGetUser'=>'    کاربر دریافت   نشد',
-    'canNotGetMessage'=>'    مسیج دریافت   نشد',
-    'TicketNotClosed'=>'    تیکت بسته  نشد',
-    'UserNotFound'=>'    کاربر یافت  نشد',
-    'UserNotCreated'=>'    کاربر ساخته  نشد',
-    'UserNotDelete'=>'    کاربر پاک  نشد',
-    'CanNotGetBook'=>'    کتاب دریافت   نشد',
+    'blog'=> [
+        'notCreated'       => '  مقاله ثبت نشد',
+        'notFound'         => '  مقاله پیدا نشد',
+        'notUpdated'       => 'مقاله آپدیت نشد',
+        'imageDontUpload'  => 'عکس آپلود نشد',
+        'notDeleted'       => '   مقاله پاک  نشد',
+        'notVerify'        => '   مقاله وریفای  نشد',
+    ],
+    'ebook'=> [
+        'notCreated'    => ' کتاب ساخته نشد ',
+        'dontUpload'    => 'کتاب آپلود نشد  ',
 
+    ],
+    'book'=> [
+        'notCreated'     => ' کتاب ساخته نشد ',
+        'notFound'       => '  کتاب پیدا نشد',
+        'notUpdated'     => 'کتاب آپدیت نشد',
+        'notDelete'      => 'کتاب پاک نشد',
+        'notVerify'      => 'کتاب وریفای  نشد',
 
+    ],
+    'category'=> [
+        'notFound'      => '  دسته بندی پیدا نشد',
+        'notUpdated'    => 'دسته بندی آپدیت نشد',
+        'notDelete'     => 'دسته بندی پاک نشد',
 
+    ],
+    'comment'=> [
+        'dontSend'      => 'نظر ارسال نشد',
+        'notFound'      => 'نظر پیدا نشد',
+        'notUpdate'     => 'نظر آپدیت نشد',
+        'notDelete'     => 'نظر پاک نشد',
 
+    ],
+    'message'=> [
+        'notFound'       => 'مسیج یافت نشد ',
+        'notCreate'      => 'مسیج ثبت نشد',
+        'notUpdate'      => 'مسیج آپدیت نشد',
+        'notDelete'      => 'مسیج پاک نشد',
+        'notGet'         => 'مسیج دریافت نشد',
 
+    ],
 
+    'quote'=> [
+        'notCreate'      => 'نقل قول ثبت نشد',
+        'notUpdate'      => 'نقل قول آپدیت نشد',
+        'notDelete'      => 'نقل پاک نشد',
 
+    ],
+    'ticket'=> [
+        'notSend'            => 'تیکت ارسال نشد',
+        'notFound'           => 'تیکت پیدا نشد',
+        'notUpdated'         => 'تیکت آپدیت نشد',
+        'cannotGetUser'      => 'کاربر دریافت نشد',
+        'canNotGetMessage'   => 'مسیج دریافت نشد',
+        'notClosed'          => ' تیکت بسته نشد',
 
+    ],
+    'user'=> [
+        'notFound'              => 'تیکت ارسال نشد',
+        'notCreated'            => 'تیکت پیدا نشد',
+        'notDelete'             => 'تیکت آپدیت نشد',
+        'canNotGetBook'         => 'کتاب دریافت نشد',
+        'ticketNotGet'          => 'کتاب دریافت نشد',
 
+    ],
+    'Forbidden'          => ' دسترسی ممنوع ',
 
 ];

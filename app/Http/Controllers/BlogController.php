@@ -164,9 +164,9 @@ class BlogController extends Controller
         try {
             $book = Blog::create($request->all());
             return $this->success($book);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.BlogNotCreated'));
+            return $this->error(__('messages.blog.notCreated'));
         }
     }
 
@@ -205,9 +205,9 @@ class BlogController extends Controller
                 return $this->error(__('messages.Forbidden'), status:403);
             }
             return $this->success($content);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.ContentNotFound'));
+            return $this->error(__('messages.blog.notFound'));
         }
     }
 
@@ -280,9 +280,9 @@ class BlogController extends Controller
 
             $book->update($request->all());
             return response()->json($book);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.contentnotUpdated'));
+            return $this->error(__('messages.blog.notUpdated'));
         }
     }
 }

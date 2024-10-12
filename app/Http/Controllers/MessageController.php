@@ -53,7 +53,7 @@ class MessageController extends Controller implements HasMiddleware
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.MessageNotFound'));
+            return $this->error(__('messages.message.notFound'));
         }
     }
 
@@ -112,7 +112,7 @@ class MessageController extends Controller implements HasMiddleware
             return $this->success($message);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.MassegeNotCreate'));
+            return $this->error(__('messages.message.notCreate'));
         }
     }
 
@@ -171,7 +171,7 @@ class MessageController extends Controller implements HasMiddleware
             return $this->success($message);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.MessageNotUpdate'));
+            return $this->error(__('messages.message.notUpdate'));
         }
     }
 
@@ -212,9 +212,9 @@ class MessageController extends Controller implements HasMiddleware
             $message->delete();
             return $this->success("Message $id deleted");
             return $this->error('Message not deleted ( admin watch your ticket )');
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.MessageNotDelete'));
+            return $this->error(__('messages.message.notDelete'));
         }
     }
 }

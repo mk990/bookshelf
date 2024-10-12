@@ -1,72 +1,72 @@
 <?php
 
 return [
-    'BlogNotCreated'     => 'Blog Not Created  ',
-    'Forbidden'=>'Forbidden',
-    'ContentNotFound'=>'Content Not Found  ',
-    'contentnotUpdated'=>'content not Updated  ',
-    'EbookNotCreated'=>'  Ebook Not Created ',
-    'EbookDontUpload'=>'  Ebook Dont Upload ',
-    'BookNotCreated'=>'  Book Not Created ',
-    'ForbiddenBook'=>' Forbidden ',
-    'BookNotFound'=>'Book Not Found ',
-    'BookNotUpdate'=>'Book Not Update  ',
-    'BookNotDelete'=>' Book Not Delete ',
-    'CategoryNotFound'=>'  Category Not Found ',
-    'CategoryNotUpdate'=>'  Category Not Update ',
-    'CategoryNotDelete'=>'  Category Not Delete ',
-    'CommentDontSend'=>'Comment Dont Send',
-    'CommentNotFound'=>' Comment Not Found  ',
-    'CommentNotUpdate'=>' Comment Not Update',
-    'CommentNotDelete'=>'Comment Not Delete',
-    'MessageNotFound'=>'  Message Not Found ',
-    'MessageNotCreate'=>'  Message Not Create  ',
-    'MessageNotUpdate'=>'   Message Not Update   ',
-    'MessageNotDelete'=>'   Message Not Delete    ',
-    'QuoteNotCreate'=>'   Quote Not Create   ',
-    'QuoteNotUpdate'=>'  Quote Not Update      ',
-    'QuoteNotDelete'=>'  Quote Not Delete       ',
-    'TicketNotSend'=>'   Ticket Not Send  ',
-    'TicketNotFound'=>'   Ticket Not Found  ',
-    'ImageDontUpload'=>'  Image Dont Upload   ',
-    'ArticleNotDeleted'=>'  Article Not Deleted   ',
-    'BlogNotVerify'=>' Blog Not Verify   ',
-    'BookNotVerify'=>' Book Not Verify  ',
-    'CommentNotFound'=>' Comment Not Found   ',
-    'TicketNotGet'=>'    Ticket Not Get    ',
-    'CannotGetUser'=>'    Cannot Get User    ',
-    'canNotGetMessage'=>'  can Not Get Message    ',
-    'TicketNotClosed'=>'   Ticket Not Closed   ',
-    'UserNotFound'=>'  User Not Found   ',
-    'UserNotCreated'=>'   User Not Created   ',
-    'UserNotDelete'=>'    User Not Delete   ',
-    'CanNotGetBook'=>'   Can Not Get Book    ',
+    'blog'=> [
+        'NotCreated'       => 'Blog Not Created',
+        'NotFound'         => 'Blog Not Found',
+        'notUpdated'       => 'Blog Not Updated',
+        'imageDontUpload'  => 'image Dont Upload',
+        'notDeleted'       => 'blog not Deleted',
+        'notVerify'        => ' blog not Verify',
 
+    ],
+    'ebook'=> [
+        'notCreated'    => 'Ebook Not Created',
+        'dontUpload'    => 'Ebook Dont Upload',
 
+    ],
+    'book'=> [
+        'notCreated'     => 'Book Not Created',
+        'notFound'       => 'Book Not Found',
+        'notUpdated'     => 'Book Not Update',
+        'notDelete'      => 'Book Not Delete',
+        'notVerify'      => 'Book not Verify',
 
+    ],
+    'category'=> [
+        'notFound'      => 'Category Not Found',
+        'notUpdated'    => 'Category Not Update',
+        'notDelete'     => 'Category Not Delete',
 
+    ],
+    'comment'=> [
+        'dontSend'      => 'Comment Dont Send',
+        'notFound'      => 'Comment Not Found',
+        'notUpdate'     => 'Comment Not Update',
+        'notDelete'     => 'Comment Not Delete',
 
+    ],
+    'message'=> [
+        'notFound'       => 'Message Not Found',
+        'notCreate'      => 'Message Not Create',
+        'notUpdate'      => 'Message Not Update',
+        'notDelete'      => 'Message Not Delete',
+        'notGet'         => 'Ticket Not Get',
 
+    ],
+    'quote'=> [
+        'notCreate'      => 'Quote Not Create',
+        'notUpdate'      => 'Quote Not Update',
+        'notDelete'      => 'Quote Not Delete',
 
+    ],
+    'ticket'=> [
+        'notSend'            => 'Ticket Not Send',
+        'notFound'           => 'Ticket Not Found',
+        'notUpdated'         => 'Ticket Not Updated',
+        'cannotGetUser'      => 'Cannot Get User',
+        'canNotGetMessage'   => 'can Not Get Message',
+        'notClosed'          => 'Ticket Not Closed',
 
+    ],
+    'user'=> [
+        'notFound'              => 'User Not Found',
+        'notCreated'            => 'User Not Created',
+        'notDelete'             => 'User Not Delete',
+        'canNotGetBook'         => 'can Not Get Book',
+        'ticketNotGet'          => 'ticket Not Get',
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    ],
+    'Forbidden'          => 'Forbidden',
 
 ];

@@ -173,7 +173,7 @@ class TicketController extends Controller implements HasMiddleware
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.TicketNotSend'));
+            return $this->error(__('messages.ticket.notSend'));
         }
     }
 
@@ -214,7 +214,7 @@ class TicketController extends Controller implements HasMiddleware
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.TicketNotFound'));
+            return $this->error(__('messages.ticket.notFound'));
         }
     }
 
@@ -244,7 +244,7 @@ class TicketController extends Controller implements HasMiddleware
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.TicketNotFound'));
+            return $this->error(__('messages.ticket.notFound'));
         }
     }
 
@@ -274,7 +274,7 @@ class TicketController extends Controller implements HasMiddleware
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.TicketNotFound'));
+            return $this->error(__('messages.ticket.notFound'));
         }
     }
 
@@ -317,7 +317,7 @@ class TicketController extends Controller implements HasMiddleware
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.TicketNotUpdated'));
+            return $this->error(__('messages.ticket.notUpdated'));
         }
     }
 }

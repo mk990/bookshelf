@@ -173,9 +173,9 @@ class CommentController extends Controller implements HasMiddleware
         try {
             $book = Comment::create($request->all());
             return $this->success($book);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.CommentDontSend'));
+            return $this->error(__('messages.comment.dontSend'));
         }
     }
 
@@ -203,9 +203,9 @@ class CommentController extends Controller implements HasMiddleware
         try {
             $comment = Comment::latest()->whereVerified(1)->limit(3)->get();
             return $this->success($comment);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(__('messages.CommentNotFound'));
+            return $this->error(__('messages.comment.notFound'));
         }
     }
 
@@ -278,9 +278,9 @@ class CommentController extends Controller implements HasMiddleware
 
             $book->update($request->all());
             return response()->json($book);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => __('messages.CommentNotUpdate')], 400);
+            return $this->error(__('messages.comment.notUpdate'));
         }
     }
 
@@ -322,9 +322,9 @@ class CommentController extends Controller implements HasMiddleware
             $comment->delete();
             $id = $comment->id;
             return response()->json("comment $id deleted");
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => __('messages.CommentNotDelete')], 400);
+            return $this->error(__('messages.comment.notDelete'));
         }
     }
 }
