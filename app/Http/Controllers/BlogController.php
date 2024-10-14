@@ -164,9 +164,9 @@ class BlogController extends Controller
         try {
             $book = Blog::create($request->all());
             return $this->success($book);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Book not created');
+            return $this->error(__('messages.blog.notCreated'));
         }
     }
 
@@ -202,12 +202,12 @@ class BlogController extends Controller
         try {
             $content = Blog::findOrFail($id);
             if ($content->user_id !== auth()->id() && $content->verified == 0) {
-                return $this->error('forbidden', status:403);
+                return $this->error(__('messages.Forbidden'), status:403);
             }
             return $this->success($content);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Content not found');
+            return $this->error(__('messages.blog.notFound'));
         }
     }
 
@@ -275,14 +275,14 @@ class BlogController extends Controller
         try {
             $book = Blog::findOrFail($id);
             if ($book->user_id !== auth()->id() || $book->verified == 1) {
-                return $this->error('forbidden', status:403);
+                return $this->error(__('messages.forbidden'), status:403);
             }
 
             $book->update($request->all());
             return response()->json($book);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'content not created'], 400);
+            return $this->error(__('messages.blog.notUpdated'));
         }
     }
 }

@@ -174,9 +174,9 @@ class BookController extends Controller implements HasMiddleware
         try {
             $book = Book::create($request->all());
             return $this->success($book);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Book not created');
+            return $this->error(__('messages.book.notCreated')); 
         }
     }
 
@@ -212,12 +212,12 @@ class BookController extends Controller implements HasMiddleware
         try {
             $book = Book::findOrFail($id);
             if ($book->user_id !== auth()->id() && $book->verified == 0) {
-                return $this->error('forbidden', status:403);
+                return $this->error(__('messages.Forbidden'), status:403);
             }
             return $this->success($book);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Book not found');
+            return $this->error(__('messages.book.notFound'));
         }
     }
 
@@ -286,14 +286,14 @@ class BookController extends Controller implements HasMiddleware
         try {
             $book = Book::findOrFail($id);
             if ($book->user_id !== auth()->id() || $book->verified == 1) {
-                return $this->error('forbidden', status:403);
+                return $this->error(__('messages.Forbidden'), status:403);
             }
 
             $book->update($request->all());
             return response()->json($book);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not created'], 400);
+            return $this->error(__('messages.book.notUpdated'));
         }
     }
 
@@ -329,15 +329,15 @@ class BookController extends Controller implements HasMiddleware
         try {
             $book = Book::findOrFail($id);
             if ($book->user_id !== auth()->id() || $book->verified == 1) {
-                return $this->error('forbidden', status:403);
+                return $this->error(__('messages.Forbidden'), status:403);
             }
 
             $book->delete();
             $id = $book->id;
             return response()->json("book $id deleted");
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not deleted'], 400);
+            return $this->error(__('messages.book.notDelete'));
         }
     }
 }

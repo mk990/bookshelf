@@ -182,9 +182,9 @@ class CommentController extends Controller implements HasMiddleware
         try {
             $book = Comment::create($request->all());
             return $this->success($book);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Book not created');
+            return $this->error(__('messages.comment.dontSend'));
         }
     }
 
@@ -220,9 +220,9 @@ class CommentController extends Controller implements HasMiddleware
         try {
             $comment = Comment::findOrFail($id);
             return $this->success($comment);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Book not found');
+            return $this->error(__('messages.comment.notFound'));
         }
     }
 
@@ -298,14 +298,14 @@ class CommentController extends Controller implements HasMiddleware
         try {
             $book = Comment::findOrFail($id);
             if ($book->user_id !== auth()->id() || $book->verified == 1) {
-                return $this->error('forbidden', status:403);
+                return $this->error(__('messages.Forbidden'), status:403);
             }
 
             $book->update($request->all());
             return response()->json($book);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not created'], 400);
+            return $this->error(__('messages.comment.notUpdate'));
         }
     }
 
@@ -343,9 +343,9 @@ class CommentController extends Controller implements HasMiddleware
             $comment->delete();
             $id = $comment->id;
             return response()->json("comment $id deleted");
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'Book not deleted'], 400);
+            return $this->error(__('messages.comment.notDelete'));
         }
     }
 }

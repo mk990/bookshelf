@@ -174,9 +174,9 @@ class BlogController extends Controller implements HasMiddleware
         try {
             $blog = Blog::create($request->all());
             return $this->success($blog);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Book not created');
+            return $this->error(__('messages.blog.notCreated'));
         }
     }
 
@@ -239,7 +239,7 @@ class BlogController extends Controller implements HasMiddleware
             return $this->success(['image uploaded successfully']);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-        }        return $this->error('image dont upload');
+        }    return $this->error(__('messages.blog.imageDontUpload'));
     }
 
     /**
@@ -276,7 +276,7 @@ class BlogController extends Controller implements HasMiddleware
             return response()->json($blog);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'article not found'], 400);
+            return $this->error(__('messages.blog.notFound'));
         }
     }
 
@@ -347,7 +347,7 @@ class BlogController extends Controller implements HasMiddleware
             return response()->json($blog);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'article dont update'], 400);
+            return $this->error(__('messages.blog.notUpdated'));
         }
     }
 
@@ -387,7 +387,7 @@ class BlogController extends Controller implements HasMiddleware
             return response()->json("blog $id deleted");
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'article not deleted'], 400);
+            return $this->error(__('messages.blog.notDeleted'));
         }
     }
 
@@ -451,7 +451,7 @@ class BlogController extends Controller implements HasMiddleware
             return response()->json(["blog $id verified"]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['error' => 'blog not verified'], 400);
+            return $this->error(__('messages.blog.notVerify'));
         }
     }
 }

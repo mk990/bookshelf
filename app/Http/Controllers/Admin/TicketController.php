@@ -151,7 +151,7 @@ class TicketController extends Controller implements HasMiddleware
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Ticket not found');
+            return $this->error(__('messages.ticket.notFound'));
         }
     }
 
@@ -190,7 +190,7 @@ class TicketController extends Controller implements HasMiddleware
             return $this->success($user_ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('cannot get user');
+            return $this->error(__('messages.ticket.cannotGetUser'));
         }
     }
 
@@ -229,7 +229,7 @@ class TicketController extends Controller implements HasMiddleware
             return $this->success($messages_ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('cannot get messages');
+            return $this->error(__('messages.ticket.canNotGetMessage'));
         }
     }
 
@@ -259,7 +259,7 @@ class TicketController extends Controller implements HasMiddleware
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Ticket not found');
+            return $this->error(__('messages.ticket.notFound'));
         }
     }
 
@@ -289,7 +289,7 @@ class TicketController extends Controller implements HasMiddleware
             return $this->success($ticket);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Ticket not found');
+            return $this->error(__('messages.ticket.notClosed'));
         }
     }
 
@@ -304,7 +304,7 @@ class TicketController extends Controller implements HasMiddleware
             return true;
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Ticket not closed');
+            return $this->error(__('messages.ticket.notClosed'));
         }
     }
 }

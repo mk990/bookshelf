@@ -59,7 +59,7 @@ class MessageController extends Controller implements HasMiddleware
             return $this->success($messages);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Message not found');
+            return $this->error(__('messages.message.notFound'));
         }
     }
 
@@ -98,7 +98,7 @@ class MessageController extends Controller implements HasMiddleware
             return $this->success($ticket_message);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('cannot get ticket');
+            return $this->error(__('messages.notGet'));
         }
     }
 
@@ -137,7 +137,7 @@ class MessageController extends Controller implements HasMiddleware
             return $this->success($user_message);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('cannot get ticket');
+            return $this->error(__('messages.notGet'));
         }
     }
 
@@ -187,7 +187,7 @@ class MessageController extends Controller implements HasMiddleware
         try {
             $ticket = Ticket::findOrFail($request->ticket_id);
             if ($ticket->user_id !== auth()->id()) {
-                return $this->error('forbidden', status:403);
+                return $this->error(__('messages.Forbidden'), status:403);
             }
             $message = Message::create($request->only(['user_id', 'message', 'ticket_id']));
 
@@ -196,7 +196,7 @@ class MessageController extends Controller implements HasMiddleware
             return $this->success($message);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Message not created');
+            return $this->error(__('messages.message.notCreate'));
         }
     }
 
@@ -247,7 +247,7 @@ class MessageController extends Controller implements HasMiddleware
         try {
             $message = Message::findOrFail($id);
             if ($message->user_id !== auth()->id() || !empty($message->view)) {
-                return $this->error('forbidden', status:403);
+                return $this->error(__('messages.Forbidden'), status:403);
             }
             $message->update([
                 'message'     => $request->message,
@@ -255,7 +255,7 @@ class MessageController extends Controller implements HasMiddleware
             return $this->success($message);
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Message not updated');
+            return $this->error(__('messages.message.notUpdate'));
         }
     }
 
@@ -292,13 +292,13 @@ class MessageController extends Controller implements HasMiddleware
             $message = Message::findOrFail($id);
             $id = $message->id;
             if ($message->user_id !== auth()->id() || !empty($message->view)) {
-                return $this->error('forbidden', status:403);
+                return $this->error(__('messages.Forbidden'), status:403);
             }
             $message->delete();
             return $this->success("Message $id deleted");
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('Message not deleted', status:400);
+            return $this->error(__('messages.message.notDelete'));
         }
     }
 }

@@ -50,9 +50,9 @@ class EbookController extends Controller
         try {
             $pdf = Ebook::create($request->all());
             return $this->success($pdf);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-            return $this->error('pdf not created');
+            return $this->error(__('messages.ebook.notCreated'));
         }
     }
 
@@ -116,6 +116,6 @@ class EbookController extends Controller
         } catch (Exception $e) {
             Log::error($e->getMessage());
         }
-        return $this->error('PDF did not upload');
+        return $this->error(__('messages.ebook.dontUpload'));
     }
 }
